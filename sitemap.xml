@@ -1,253 +1,253 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Installation/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Overview/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Tags/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Usage/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Assets/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/AwareInterface/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Commands/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Configuration/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Controller/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Database/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Events/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Exceptions/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Forms/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/HttpClient/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Routing/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Security/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Session/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Templates/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Translation/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Assets/Icons/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Assets/Images/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Assets/Javascript/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Assets/Style/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Database/Entities/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Database/Fixtures/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Database/Migrations/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Forms/Elements/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Forms/Validators/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Routing/Constraints/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Routing/Dispatcher/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Routing/Language/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/Routing/Parameters/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Blocks/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Date/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Layout/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Link/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Path/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Components/ViewHelper/Translate/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/AdvancedForm/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicCommand/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicController/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicEntity/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicForm/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicFormValidator/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicRequest/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicSecurity/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Cookbook/BasicService/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Quickstart/Overview/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://127.0.0.1:8000/faulancer/Tags/</loc>
-         <lastmod>2022-07-16</lastmod>
+         <loc>None</loc>
+         <lastmod>2022-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
