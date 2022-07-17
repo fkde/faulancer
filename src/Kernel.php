@@ -2,6 +2,7 @@
 
 namespace Faulancer;
 
+use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
 use Faulancer\Database\EntityManager;
@@ -54,6 +55,7 @@ class Kernel
 
         $container->set(Logger::class, $logger, [LoggerInterface::class]);
 
+        /** @var Observer $observer */
         $observer = Initializer::load(Observer::class);
         self::registerSubscribers($observer, $logger);
         $observer->notify(new ConfigLoadedEvent($config));
@@ -100,6 +102,11 @@ class Kernel
 
     /**
      * @return void
+     * @throws Exception\FileNotFoundException
+     * @throws Exception\ViewHelperException
+     * @throws NotFoundException
+     * @throws TemplateException
+     * @throws \Throwable
      */
     public static function boot(): void
     {
@@ -173,8 +180,9 @@ class Kernel
     private static function registerSubscribers(Observer $observer, Logger $logger): void
     {
         $coreDir = __DIR__ . '/Event/Subscriber';
-        $appDir  = __DIR__ . '/../../src/Event';
+        $appDir  = realpath('./../src/Event/Subscriber');
 
+        // Add FQDN namespaces to the found subscribers
         $coreSubscriber = array_map(fn($item) => ('Faulancer\Event\Subscriber\\' . $item), self::loadSubscribers($coreDir));
         $appSubscriber  = array_map(fn($item) => ('App\Event\Subscriber\\' . $item), self::loadSubscribers($appDir));
 

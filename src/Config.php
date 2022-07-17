@@ -2,21 +2,24 @@
 
 namespace Faulancer;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Faulancer\Exception\FileNotFoundException;
+use Faulancer\Exception\FrameworkException;
 
 class Config
 {
 
-    private const DOTENV_PATH = __DIR__ . '/../../.env';
-    private const DOTENV_LOCAL_PATH = __DIR__ . '/../../.env.local';
+
+    private const DOTENV_PATH = './../.env';
+    private const DOTENV_LOCAL_PATH = './../.env.local';
 
     private array $config;
 
     /**
-     * Config constructor.
-     *
      * @param array $config
      *
+     * @throws AssertionFailedException
      * @throws FileNotFoundException
      */
     public function __construct(array $config = [])
@@ -77,12 +80,14 @@ class Config
     private function loadConfig(array $config = []): void
     {
         $types     = ['app', 'routes', 'plugins'];
-        $configDir = __DIR__ . '/../../config/';
+        $configDir = realpath('./../config');
+
+        Assertion::string($configDir, 'Couldn\'t read config directory.');
 
         $this->config = $config;
 
         foreach ($types as $type) {
-            $configFile = sprintf('%s.conf.php', $type);
+            $configFile = sprintf('/%s.conf.php', $type);
             $configFilePath = $configDir . $configFile;
 
             if (false === file_exists($configFilePath)) {
@@ -105,22 +110,28 @@ class Config
 
     /**
      * @return void
+     * @throws AssertionFailedException
      */
     private function loadDotEnv(): void
     {
-        $mainDotEnvFile  = __DIR__ . '/../../.env';
-        $localDotEnvFile = __DIR__ . '/../../.env.local';
+        $mainDotEnvFile  = realpath(self::DOTENV_PATH);
+        $localDotEnvFile = realpath(self::DOTENV_LOCAL_PATH);
         $dotEnvContents  = [];
+        $envFileExists = false;
 
         if (file_exists($mainDotEnvFile)) {
             $dotEnvMain = file_get_contents($mainDotEnvFile);
             $dotEnvContents = $this->parseDotEnv($dotEnvMain);
+            $envFileExists = true;
         }
 
         if (file_exists($localDotEnvFile)) {
             $dotEnvLocal = file_get_contents($localDotEnvFile);
             $dotEnvContents = array_merge($dotEnvContents, $this->parseDotEnv($dotEnvLocal));
+            $envFileExists = true;
         }
+
+        Assertion::true($envFileExists, 'Couldn\'t read .env file.');
 
         foreach ($dotEnvContents as $key => $value) {
             putenv(sprintf('%s=%s', $key, $value));
