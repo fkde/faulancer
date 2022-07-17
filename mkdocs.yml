@@ -1,5 +1,5 @@
 site_name: Faulancer Framework
-site_url:
+site_url: https://fkde.github.io/faulancer
 
 theme:
   name: material
@@ -15,52 +15,53 @@ markdown_extensions:
 
 plugins:
   - tags:
-      tags_file: Tags.md
+      tags_file: tags.md
 
 nav:
-  - Installation: Installation.md
-  - Basic usage: Usage.md
+  - Installation: installation.md
+  - Basic usage: usage.md
   - Components:
     - Assets:
-        - Images: Components/Assets/Images.md
-        - Style: Components/Assets/Style.md
-        - Javascript: Components/Assets/Javascript.md
-        - Icons: Components/Assets/Icons.md
-    - Controller: Components/Controller.md
+      - Images: components/assets/images.md
+      - Style: components/assets/style.md
+      - Javascript: components/assets/javascript.md
+      - Icons: components/assets/icons.md
+    - Commands: components/commands.md
+    - Configuration: components/configuration.md
+    - Controller: components/controller.md
     - Database:
-      - Entities: Components/Database/Entities.md
-      - Migrations: Components/Database/Migrations.md
-      - Fixtures: Components/Database/Fixtures.md
-    - Routing:
-      - Parameters: Components/Routing/Parameters.md
-      - Validation: Components/Routing/Constraints.md
-      - Multi-Language: Components/Routing/Language.md
-      - Dispatcher: Components/Routing/Dispatcher.md
-    - Templates:
-      - ViewHelper:
-        - Blocks: Components/ViewHelper/Blocks.md
-        - Link: Components/ViewHelper/Link.md
-        - Path: Components/ViewHelper/Path.md
-        - Layout: Components/ViewHelper/Layout.md
-        - Translate: Components/ViewHelper/Translate.md
+      - Entities: components/database/entities.md
+      - Migrations: components/database/migrations.md
+      - Fixtures: components/database/fixtures.md
+    - Events: components/events.md
+    - Exceptions: components/exceptions.md
     - Forms:
-      - Elements: Components/Forms/Elements.md
-      - Validators: Components/Forms/Validators.md
-    - Commands: Components/Commands.md
-    - Configuration: Components/Configuration.md
-    - Session: Components/Session.md
-    - Events: Components/Events.md
-    - HttpClient: Components/HttpClient.md
-    - AwareInterface: Components/AwareInterface.md
-    - Translation: Components/Translation.md
-    - Security: Components/Security.md
-    - Exceptions: Components/Exceptions.md
+      - Elements: components/forms/elements.md
+      - Validators: components/forms/validators.md
+    - Http client: components/httpClient.md
+    - Initializer:
+      - AwareInterface: components/awareInterface.md
+    - Routing:
+      - Parameters: components/routing/parameters.md
+      - Validation: components/routing/constraints.md
+      - Multi-language: components/routing/language.md
+      - Dispatcher: components/routing/dispatcher.md
+    - Templates:
+      - View Helper:
+        - Blocks: components/viewHelper/blocks.md
+        - Link: components/viewHelper/link.md
+        - Path: components/viewHelper/path.md
+        - Layout: components/viewHelper/layout.md
+        - Translate: components/viewHelper/translate.md
+    - Translation: components/translation.md
+    - Security: components/security.md
+    - Session: components/session.md
   - Cookbook:
-    - Create a controller: Cookbook/BasicController.md
-    - Build a form: Cookbook/BasicForm.md
-    - Create a service: Cookbook/BasicService.md
-    - Make a request: Cookbook/BasicRequest.md
-    - Persist data: Cookbook/BasicEntity.md
-    - Register own command: Cookbook/BasicCommand.md
-    - Create own form validator: Cookbook/BasicFormValidator.md
-    - Secure your application: Cookbook/BasicSecurity.md
+    - Create a controller: cookbook/basicController.md
+    - Build a form: cookbook/basicForm.md
+    - Create a service: cookbook/basicService.md
+    - Make a simple request: cookbook/basicRequest.md
+    - Persist data: cookbook/basicEntity.md
+    - Register own command: cookbook/basicCommand.md
+    - Create own form validator: cookbook/basicFormValidator.md
+    - Secure your application: cookbook/basicSecurity.md
