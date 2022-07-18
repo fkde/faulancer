@@ -18,11 +18,16 @@ class Language extends AbstractViewHelper implements ConfigAwareInterface
 
     /**
      * @param bool $asISO
-     * @return string
+     * @return string|null
      */
     public function getCurrentLanguage(bool $asISO = false):? string
     {
         $lang = $this->getConfig()->get('language');
+
+        if (null === $lang) {
+            return null;
+        }
+
         return (true === $asISO)
             ? LangValueObject::$isoCodes[$lang]
             : $lang;

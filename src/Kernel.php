@@ -2,6 +2,8 @@
 
 namespace Faulancer;
 
+use Faulancer\Event\DispatcherLoadedEvent;
+use Faulancer\Exception\ViewHelperException;
 use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
@@ -48,7 +50,7 @@ class Kernel
         $environmentService = new Environment($environment);
         $container->set(Environment::class, $environmentService);
 
-        $logFile = sprintf('%s/%s.log', rtrim($config->get('app:logs:path'), '/'), $environment);
+        $logFile = sprintf('%s/%s.log', rtrim(realpath($config->get('app:logs:path')), '/'), $environment);
         $fileLogger = new Logger\File($logFile);
         $fileLogger->setMinLevel($config->get('app:logs:minLevel') ?? 'notice');
         $logger = new Logger([$fileLogger]);
@@ -137,6 +139,7 @@ class Kernel
             $user = Initializer::load(User::class, [$entityManager, $session]);
             $container->set(User::class, $user);
 
+            /** @var ErrorController $errorController */
             $errorController = Initializer::load(ErrorController::class, [
                 $request,
                 $config,
@@ -146,10 +149,11 @@ class Kernel
             ]);
 
             set_error_handler([$errorController, 'onError']);
-            set_exception_handler([$errorController, 'onException']);
+            //set_exception_handler([$errorController, 'onException']);
 
             /** @var Dispatcher $dispatcher */
             $dispatcher = Initializer::load(Dispatcher::class, [$config]);
+            $observer->notify(new DispatcherLoadedEvent($dispatcher));
 
             $response = $dispatcher->forward($request);
 
@@ -163,11 +167,10 @@ class Kernel
 
             echo $response->getBody();
 
-        } catch (AssertionFailedException | FrameworkException | NotFoundException $e) {
-            if ($logger instanceof LoggerInterface && $errorController instanceof ErrorController) {
-                $logger->info($e->getMessage());
-                echo $errorController->onNotFound($e);
-            }
+        } catch (FrameworkException $e) {
+            $errorController->onException($e);
+        } catch (\ParseError | \Error $p) {
+            $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
         }
     }
 
@@ -182,7 +185,7 @@ class Kernel
         $coreDir = __DIR__ . '/Event/Subscriber';
         $appDir  = realpath('./../src/Event/Subscriber');
 
-        // Add FQDN namespaces to the found subscribers
+        // Add FQDN namespaces to found subscribers
         $coreSubscriber = array_map(fn($item) => ('Faulancer\Event\Subscriber\\' . $item), self::loadSubscribers($coreDir));
         $appSubscriber  = array_map(fn($item) => ('App\Event\Subscriber\\' . $item), self::loadSubscribers($appDir));
 

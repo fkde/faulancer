@@ -5,6 +5,9 @@ namespace Faulancer\Service;
 class Environment
 {
 
+    public const PRODUCTION = 'production';
+    public const DEVELOPMENT = 'development';
+
     private string $environment;
 
     /**

@@ -7,8 +7,6 @@ use Psr\Http\Message\RequestInterface;
 
 class RequestEvent extends AbstractEvent
 {
-    public const NAME = 'request.created';
-
     private RequestInterface $request;
 
     /**
@@ -26,6 +24,11 @@ class RequestEvent extends AbstractEvent
     public function getRequest(): RequestInterface
     {
         return $this->request;
+    }
+
+    public static function getName(): string
+    {
+        return 'request.created';
     }
 
 }

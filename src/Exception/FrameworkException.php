@@ -16,8 +16,12 @@ class FrameworkException extends \Exception
      * @param int            $code
      * @param Throwable|null $previous
      */
-    #[Pure] public function __construct($message = "", $context = [], $code = 0, Throwable $previous = null)
-    {
+    #[Pure] public function __construct(
+        string $message = "",
+        array $context = [],
+        int $code = 0,
+        Throwable $previous = null
+    ) {
         parent::__construct($message, $code, $previous);
         $this->context = $context;
     }

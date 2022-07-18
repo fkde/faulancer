@@ -4,21 +4,26 @@ namespace Faulancer\View;
 
 use Faulancer\Config;
 use Faulancer\Exception\ContainerException;
+use Faulancer\Exception\FrameworkException;
 use Faulancer\Initializer;
 use Faulancer\Exception\NotFoundException;
 use Faulancer\Exception\TemplateException;
 use Faulancer\Exception\ViewHelperException;
 use Faulancer\Service\Aware\ConfigAwareTrait;
+use Faulancer\Service\Aware\EnvironmentAwareInterface;
+use Faulancer\Service\Aware\EnvironmentAwareTrait;
 use Faulancer\Service\Aware\LoggerAwareTrait;
+use Faulancer\Service\Environment;
 use Faulancer\View\Helper\AbstractViewHelper;
 use Faulancer\Exception\FileNotFoundException;
 use Faulancer\Service\Aware\LoggerAwareInterface;
 use Faulancer\Service\Aware\ConfigAwareInterface;
 
-class Renderer implements LoggerAwareInterface, ConfigAwareInterface
+class Renderer implements LoggerAwareInterface, ConfigAwareInterface, EnvironmentAwareInterface
 {
     use LoggerAwareTrait;
     use ConfigAwareTrait;
+    use EnvironmentAwareTrait;
 
     private Config $config;
 
@@ -38,7 +43,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
      */
     public function setTemplate(string $template = ''): self
     {
-        $templatePath = $this->config->get('app:template:path');
+        $templatePath = realpath($this->config->get('app:template:path'));
 
         $templateFile = ltrim($template, DIRECTORY_SEPARATOR);
         $template     = rtrim($templatePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $templateFile;
@@ -188,7 +193,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
 
         // Dev environment
         $this->logger->debug('Remove unnecessary spaces and tabs from output.');
-        return str_replace(["\t", "\t\t", "\r", "\n\n\n"], "\n", $output);
+        return str_replace(["\t", "\t", "\r", "\n\n"], " ", $output);
     }
 
     /**
@@ -219,8 +224,9 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
         } catch (ViewHelperException $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             throw $e;
-        } catch (\Error $err) {
+        } catch (\Error $e) {
             $this->logger->critical($e->getMessage(), ['exception' => $e]);
+            throw $e;
         } finally {
             $this->clearOutputBuffer();
         }
@@ -237,7 +243,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
      */
     private function clearOutputBuffer(): void
     {
-        while (ob_get_level() > 0) {
+        while (ob_get_level() > 1) {
             $this->logger->debug('Clean output buffer.');
             ob_end_clean();
        }
@@ -245,12 +251,13 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
 
     /**
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      *
-     * @return mixed
+     * @return mixed|void
+     * @throws ContainerException
+     * @throws FrameworkException
      * @throws NotFoundException
      * @throws ViewHelperException
-     * @throws ContainerException
      */
     public function __call(string $name, array $arguments)
     {
@@ -267,8 +274,11 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface
 
             return call_user_func_array([$class, '__invoke'], $arguments);
 
-        } catch (\Error $err) {
-
+        } catch (FrameworkException $t) {
+            $this->getLogger()->error($t->getMessage(), ['exception' => $t]);
+            if ($this->getEnvironment()->get() === Environment::DEVELOPMENT) {
+                throw $t;
+            }
         }
     }
 
