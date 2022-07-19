@@ -9,8 +9,6 @@ use Faulancer\Exception\EventException;
 class ConfigLoadedEvent extends AbstractEvent
 {
 
-    public const NAME = 'config.loaded';
-
     private Config $config;
 
     /**
@@ -28,6 +26,11 @@ class ConfigLoadedEvent extends AbstractEvent
     public function getConfig(): Config
     {
         return $this->config;
+    }
+
+    public static function getName(): string
+    {
+        return 'config.loaded';
     }
 
 }

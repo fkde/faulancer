@@ -22,8 +22,12 @@ class Observer implements LoggerAwareInterface
         // Call the setup method to get the subscribed events
         $events = $subscriber::subscribe();
 
+        /**
+         * @var string $event  The event name to which should be subscribed to
+         * @var string $method The method from the subscriber which should be called
+         */
         foreach ($events as $event => $method) {
-            $this->subscribers[$event::NAME][$method][] = $subscriber;
+            $this->subscribers[$event::getName()][$method][] = $subscriber;
         }
     }
 
@@ -37,7 +41,7 @@ class Observer implements LoggerAwareInterface
             foreach ($this->subscribers as $eventName => $payload) {
 
                 // Search for matching events
-                if ($eventName !== $event::NAME) {
+                if ($eventName !== $event->getName()) {
                     continue;
                 }
 
@@ -53,7 +57,7 @@ class Observer implements LoggerAwareInterface
                 }
             }
         } catch (ContainerException | NotFoundException $e) {
-            $this->getLogger()->info($e->getMessage(), ['exception' => $e]);
+            $this->getLogger()->warning($e->getMessage(), ['exception' => $e]);
         }
 
         return null;

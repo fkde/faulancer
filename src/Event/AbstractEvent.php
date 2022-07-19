@@ -4,8 +4,6 @@ namespace Faulancer\Event;
 
 abstract class AbstractEvent
 {
-    public const NAME = null;
-
     private null|object|string|array|int $payload;
 
     /**
@@ -24,6 +22,9 @@ abstract class AbstractEvent
         return $this->payload;
     }
 
-
+    /**
+     * @return string
+     */
+    abstract public static function getName(): string;
 
 }

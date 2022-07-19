@@ -59,6 +59,7 @@ class AssetList extends AbstractViewHelper
     private function collectAssetsContent(array $files, string $type): string
     {
         $docRoot = dirname(__DIR__, 3) . '/public';
+
         $content  = '';
         $contents = [];
         foreach ($files as $file) {

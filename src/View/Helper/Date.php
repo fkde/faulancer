@@ -15,7 +15,6 @@ class Date extends AbstractViewHelper
      */
     public function __invoke(string $date = ''): self
     {
-        !$var;
         try {
             $this->date = new \DateTime($date);
             $this->date->setTimezone(new \DateTimeZone('Europe/Berlin'));

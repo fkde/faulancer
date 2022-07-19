@@ -5,27 +5,28 @@ namespace Faulancer;
 use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
-use Faulancer\Database\EntityManager;
-use Faulancer\Event\AbstractSubscriber;
-use Faulancer\Event\ConfigLoadedEvent;
-use Faulancer\Event\Observer;
-use Faulancer\Event\RequestEvent;
-use Faulancer\Exception\ContainerException;
-use Faulancer\Exception\NotFoundException;
-use Faulancer\Exception\TemplateException;
 use Nyholm\Psr7\Request;
 use Faulancer\Service\User;
 use Psr\Log\LoggerInterface;
+use Faulancer\Event\Observer;
 use Faulancer\Service\Session;
 use Faulancer\Http\HttpFactory;
+use Faulancer\Event\RequestEvent;
 use Faulancer\Service\Translator;
 use Faulancer\Service\Environment;
-use Assert\AssertionFailedException;
+use Faulancer\Database\EntityManager;
+use Faulancer\Event\ConfigLoadedEvent;
 use Psr\Http\Message\RequestInterface;
+use Faulancer\Event\AbstractSubscriber;
 use Psr\Http\Message\ResponseInterface;
 use Faulancer\Controller\ErrorController;
+use Faulancer\Event\DispatcherLoadedEvent;
+use Faulancer\Exception\NotFoundException;
+use Faulancer\Exception\TemplateException;
+use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use Faulancer\Exception\ViewHelperException;
 
 class Kernel
 {
@@ -48,7 +49,7 @@ class Kernel
         $environmentService = new Environment($environment);
         $container->set(Environment::class, $environmentService);
 
-        $logFile = sprintf('%s/%s.log', rtrim($config->get('app:logs:path'), '/'), $environment);
+        $logFile = sprintf('%s/%s.log', rtrim(realpath($config->get('app:logs:path')), '/'), $environment);
         $fileLogger = new Logger\File($logFile);
         $fileLogger->setMinLevel($config->get('app:logs:minLevel') ?? 'notice');
         $logger = new Logger([$fileLogger]);
@@ -60,33 +61,7 @@ class Kernel
         self::registerSubscribers($observer, $logger);
         $observer->notify(new ConfigLoadedEvent($config));
 
-//        $services = $config->get('services') ?? [];
-//
-//        foreach ($services as $serviceId => $serviceDefinition) {
-//            if (is_int($serviceId)) {
-//                $serviceId = $serviceDefinition;
-//            }
-//
-//            if ($container->has($serviceId)) {
-//                continue;
-//            }
-//
-//            $arguments = array_map(static function ($dependency) use ($container) {
-//
-//                return ($container->has($dependency))
-//                    ? $container->get($dependency)
-//                    : Initializer::load($dependency);
-//
-//            }, $serviceDefinition['arguments'] ?? []);
-//
-//            $serviceObject = Initializer::load($serviceId, $arguments);
-//
-//            if (null === $serviceObject) {
-//                continue;
-//            }
-//
-//            $container->set($serviceId, $serviceObject);
-//        }
+        //$this->loadServices($config, $container);
 
         $entityManager = Initializer::load(EntityManager::class, [$config]);
         $container->set(EntityManager::class, $entityManager);
@@ -137,6 +112,7 @@ class Kernel
             $user = Initializer::load(User::class, [$entityManager, $session]);
             $container->set(User::class, $user);
 
+            /** @var ErrorController $errorController */
             $errorController = Initializer::load(ErrorController::class, [
                 $request,
                 $config,
@@ -146,10 +122,11 @@ class Kernel
             ]);
 
             set_error_handler([$errorController, 'onError']);
-            set_exception_handler([$errorController, 'onException']);
+            //set_exception_handler([$errorController, 'onException']);
 
             /** @var Dispatcher $dispatcher */
             $dispatcher = Initializer::load(Dispatcher::class, [$config]);
+            $observer->notify(new DispatcherLoadedEvent($dispatcher));
 
             $response = $dispatcher->forward($request);
 
@@ -163,11 +140,10 @@ class Kernel
 
             echo $response->getBody();
 
-        } catch (AssertionFailedException | FrameworkException | NotFoundException $e) {
-            if ($logger instanceof LoggerInterface && $errorController instanceof ErrorController) {
-                $logger->info($e->getMessage());
-                echo $errorController->onNotFound($e);
-            }
+        } catch (FrameworkException $e) {
+            $errorController->onException($e);
+        } catch (\ParseError | \Error $p) {
+            $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
         }
     }
 
@@ -182,7 +158,7 @@ class Kernel
         $coreDir = __DIR__ . '/Event/Subscriber';
         $appDir  = realpath('./../src/Event/Subscriber');
 
-        // Add FQDN namespaces to the found subscribers
+        // Add FQDN namespaces to found subscribers
         $coreSubscriber = array_map(fn($item) => ('Faulancer\Event\Subscriber\\' . $item), self::loadSubscribers($coreDir));
         $appSubscriber  = array_map(fn($item) => ('App\Event\Subscriber\\' . $item), self::loadSubscribers($appDir));
 
@@ -223,5 +199,45 @@ class Kernel
                 fn($item) => str_ends_with($item, 'Subscriber.php')
             )
         );
+    }
+
+    /**
+     * @param Config $config
+     * @param Container $container
+     *
+     * @return void
+     *
+     * @throws ContainerException
+     * @throws NotFoundException
+     */
+    private static function loadServices(Config $config, Container $container): void
+    {
+        $services = $config->get('services') ?? [];
+
+        foreach ($services as $serviceId => $serviceDefinition) {
+            if (is_int($serviceId)) {
+                $serviceId = $serviceDefinition;
+            }
+
+            if ($container->has($serviceId)) {
+                continue;
+            }
+
+            $arguments = array_map(static function ($dependency) use ($container) {
+
+                return ($container->has($dependency))
+                    ? $container->get($dependency)
+                    : Initializer::load($dependency);
+
+            }, $serviceDefinition['arguments'] ?? []);
+
+            $serviceObject = Initializer::load($serviceId, $arguments);
+
+            if (null === $serviceObject) {
+                continue;
+            }
+
+            $container->set($serviceId, $serviceObject);
+        }
     }
 }

@@ -30,6 +30,5 @@ class TokenSubscriber extends AbstractSubscriber implements LoggerAwareInterface
             return;
         }
 
-
     }
 }

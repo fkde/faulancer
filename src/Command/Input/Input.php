@@ -89,7 +89,7 @@ class Input
         return $this->options[$name] ?? null;
     }
 
-    public function ask(string $message)
+    public function ask(string $message): string
     {
         $input = readlink($message);
         if ($input) {
