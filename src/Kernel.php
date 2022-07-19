@@ -92,7 +92,7 @@ class Kernel
             [$config, $entityManager, $logger, $container, $observer] = static::bootDefaults();
 
             $httpFactory = new HttpFactory();
-            $creator     = new ServerRequestCreator(
+            $creator = new ServerRequestCreator(
                 $httpFactory,
                 $httpFactory,
                 $httpFactory,
@@ -133,6 +133,9 @@ class Kernel
             Assertion::isInstanceOf($response, ResponseInterface::class);
 
             $headers = $response->getHeaders();
+            $statusCode = $response->getStatusCode();
+
+            header('HTTP/2 ' . $statusCode . ' ' . $response->getReasonPhrase());
 
             foreach ($headers as $name => $value) {
                 header($name . ': ' . implode(';', $value));
@@ -140,8 +143,11 @@ class Kernel
 
             echo $response->getBody();
 
+        } catch (NotFoundException $e) {
+            header('HTTP/2 404 Not found');
+            echo $errorController->onException($e);
         } catch (FrameworkException $e) {
-            $errorController->onException($e);
+            echo $errorController->onException($e);
         } catch (\ParseError | \Error $p) {
             $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
         }

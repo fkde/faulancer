@@ -5,6 +5,7 @@ namespace Faulancer\Controller;
 use Assert\Assert;
 use Apix\Log\Logger;
 use Faulancer\Config;
+use Faulancer\Exception\FrameworkException;
 use Faulancer\View\Renderer;
 use Faulancer\Model\Role;
 use Faulancer\Initializer;
@@ -110,7 +111,7 @@ abstract class AbstractController implements HttpFactoryAwareInterface
      * @throws NotFoundException
      * @throws TemplateException
      * @throws ViewHelperException
-     * @throws \Throwable
+     * @throws FrameworkException
      */
     protected function render(string $template, array $variables = []): ResponseInterface
     {
@@ -125,9 +126,9 @@ abstract class AbstractController implements HttpFactoryAwareInterface
             $result = $this->getRenderer()->render();
 
             $this->logger->debug('Successfully rendered template "' . $template . '".');
-        } catch (\Throwable $t) {
-            $this->logger->error($t->getMessage(), ['exception' => $t]);
-            throw $t;
+        } catch (FrameworkException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            throw $e;
         }
 
         return $this->createResponse($result);

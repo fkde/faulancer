@@ -2,20 +2,20 @@
 
 namespace Faulancer\Controller;
 
-use Faulancer\Event\ExceptionEvent;
-use Faulancer\Event\Observer;
-use Faulancer\Exception\FrameworkException;
-use Faulancer\Service\Aware\LoggerAwareInterface;
-use Faulancer\Service\Aware\ObserverAwareInterface;
-use Faulancer\Service\Aware\ObserverAwareTrait;
-use Faulancer\Service\Environment;
 use \Throwable;
+use Faulancer\Event\Observer;
+use Faulancer\Service\Environment;
+use Faulancer\Event\ExceptionEvent;
 use Psr\Http\Message\StreamInterface;
 use Faulancer\Exception\NotFoundException;
 use Faulancer\Exception\TemplateException;
+use Faulancer\Exception\FrameworkException;
 use Faulancer\Exception\PermissionException;
 use Faulancer\Exception\ViewHelperException;
 use Faulancer\Exception\FileNotFoundException;
+use Faulancer\Service\Aware\ObserverAwareTrait;
+use Faulancer\Service\Aware\LoggerAwareInterface;
+use Faulancer\Service\Aware\ObserverAwareInterface;
 
 /**
  * Class ErrorController
@@ -30,23 +30,23 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
     /**
      * @param Throwable $t
      *
-     * @return void
+     * @return string
      *
      * @throws FileNotFoundException
+     * @throws FrameworkException
      * @throws NotFoundException
      * @throws TemplateException
-     * @throws Throwable
      * @throws ViewHelperException
      */
-    public function onException(Throwable $t): void
+    public function onException(Throwable $t): string
     {
         if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-            //echo $this->render('/error/404.phtml')->getBody();
+
             $this->getObserver()->notify(new ExceptionEvent($t));
-            return;
+            return $this->render('/error/404.phtml')->getBody();
         }
 
-        echo $this->renderStacktrace($t);
+        return $this->renderStacktrace($t);
     }
 
     /**
@@ -56,9 +56,14 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
      * @param int        $line
      * @param array|null $context
      *
-     * @return void
+     * @return string
+     * @throws FileNotFoundException
+     * @throws FrameworkException
+     * @throws NotFoundException
+     * @throws TemplateException
+     * @throws ViewHelperException
      */
-    public function onError(int $code, string $message, string $file, int $line, ?array $context = null): void
+    public function onError(int $code, string $message, string $file, int $line, ?array $context = null): string
     {
         $this->getLogger()->error($message, ['file' => $file, 'line' => $line]);
 
@@ -72,11 +77,11 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
                     ])
                 )
             );
-            return;
+            return $this->render('/error/404.phtml')->getBody();
         }
 
         $err = new \ErrorException($message, $code, 1, $file, $line);
-        echo $this->renderStacktrace($err, self::TYPE_ERROR);
+        return $this->renderStacktrace($err, self::TYPE_ERROR);
     }
 
     /**
@@ -108,7 +113,7 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
      */
     private function output(string $message, string $type, string $occurrence, string $trace, $additionalOptions = null): string
     {
-        $layout = <<<LAYOUT
+        return <<<LAYOUT
 <!DOCTYPE htmL>
 <html lang="en">
 <head>
@@ -134,7 +139,5 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
 </body>
 </html>
 LAYOUT;
-
-        return $layout;
     }
 }
