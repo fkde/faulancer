@@ -2,8 +2,12 @@
 
 namespace Faulancer\Controller;
 
+use Faulancer\Event\ExceptionEvent;
+use Faulancer\Event\Observer;
 use Faulancer\Exception\FrameworkException;
 use Faulancer\Service\Aware\LoggerAwareInterface;
+use Faulancer\Service\Aware\ObserverAwareInterface;
+use Faulancer\Service\Aware\ObserverAwareTrait;
 use Faulancer\Service\Environment;
 use \Throwable;
 use Psr\Http\Message\StreamInterface;
@@ -16,8 +20,9 @@ use Faulancer\Exception\FileNotFoundException;
 /**
  * Class ErrorController
  */
-class ErrorController extends AbstractController
+class ErrorController extends AbstractController implements ObserverAwareInterface
 {
+    use ObserverAwareTrait;
 
     private const TYPE_EXCEPTION = 'Exception';
     private const TYPE_ERROR = 'Error';
@@ -36,7 +41,8 @@ class ErrorController extends AbstractController
     public function onException(Throwable $t): void
     {
         if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-            echo $this->render('/error/404.phtml')->getBody();
+            //echo $this->render('/error/404.phtml')->getBody();
+            $this->getObserver()->notify(new ExceptionEvent($t));
             return;
         }
 
@@ -57,7 +63,15 @@ class ErrorController extends AbstractController
         $this->getLogger()->error($message, ['file' => $file, 'line' => $line]);
 
         if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-            echo $this->render('/error/404.phtml')->getBody();
+            $this->getObserver()->notify(
+                new ExceptionEvent(
+                    new FrameworkException($message, [
+                        'file' => $file,
+                        'line' => $line,
+                        'originalContext' => $context
+                    ])
+                )
+            );
             return;
         }
 
