@@ -223,10 +223,9 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
         } catch (ViewHelperException $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
-            throw $e;
-        } catch (\Error $e) {
-            $this->logger->critical($e->getMessage(), ['exception' => $e]);
-            throw $e;
+            if ($this->getEnvironment()->get() === Environment::DEVELOPMENT) {
+                throw $e;
+            }
         } finally {
             $this->clearOutputBuffer();
         }
@@ -244,7 +243,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
     private function clearOutputBuffer(): void
     {
         while (ob_get_level() > 1) {
-            $this->logger->debug('Clean output buffer.');
+            $this->logger->debug('Cleaned output buffer.');
             ob_end_clean();
        }
     }
@@ -254,9 +253,6 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
      * @param array  $arguments
      *
      * @return mixed|void
-     * @throws ContainerException
-     * @throws FrameworkException
-     * @throws NotFoundException
      * @throws ViewHelperException
      */
     public function __call(string $name, array $arguments)
@@ -274,10 +270,10 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
             return call_user_func_array([$class, '__invoke'], $arguments);
 
-        } catch (FrameworkException $t) {
-            $this->getLogger()->error($t->getMessage(), ['exception' => $t]);
+        } catch (FrameworkException $e) {
+            $this->getLogger()->error($e->getMessage(), ['exception' => $e]);
             if ($this->getEnvironment()->get() === Environment::DEVELOPMENT) {
-                throw $t;
+                throw new ViewHelperException($e->getMessage(), [], $e->getCode(), $e);
             }
         }
     }

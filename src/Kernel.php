@@ -2,32 +2,31 @@
 
 namespace Faulancer;
 
-use Faulancer\Event\DispatcherLoadedEvent;
-use Faulancer\Exception\ViewHelperException;
 use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
-use Faulancer\Database\EntityManager;
-use Faulancer\Event\AbstractSubscriber;
-use Faulancer\Event\ConfigLoadedEvent;
-use Faulancer\Event\Observer;
-use Faulancer\Event\RequestEvent;
-use Faulancer\Exception\ContainerException;
-use Faulancer\Exception\NotFoundException;
-use Faulancer\Exception\TemplateException;
 use Nyholm\Psr7\Request;
 use Faulancer\Service\User;
 use Psr\Log\LoggerInterface;
+use Faulancer\Event\Observer;
 use Faulancer\Service\Session;
 use Faulancer\Http\HttpFactory;
+use Faulancer\Event\RequestEvent;
 use Faulancer\Service\Translator;
 use Faulancer\Service\Environment;
-use Assert\AssertionFailedException;
+use Faulancer\Database\EntityManager;
+use Faulancer\Event\ConfigLoadedEvent;
 use Psr\Http\Message\RequestInterface;
+use Faulancer\Event\AbstractSubscriber;
 use Psr\Http\Message\ResponseInterface;
 use Faulancer\Controller\ErrorController;
+use Faulancer\Event\DispatcherLoadedEvent;
+use Faulancer\Exception\NotFoundException;
+use Faulancer\Exception\TemplateException;
+use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use Faulancer\Exception\ViewHelperException;
 
 class Kernel
 {
@@ -62,33 +61,7 @@ class Kernel
         self::registerSubscribers($observer, $logger);
         $observer->notify(new ConfigLoadedEvent($config));
 
-//        $services = $config->get('services') ?? [];
-//
-//        foreach ($services as $serviceId => $serviceDefinition) {
-//            if (is_int($serviceId)) {
-//                $serviceId = $serviceDefinition;
-//            }
-//
-//            if ($container->has($serviceId)) {
-//                continue;
-//            }
-//
-//            $arguments = array_map(static function ($dependency) use ($container) {
-//
-//                return ($container->has($dependency))
-//                    ? $container->get($dependency)
-//                    : Initializer::load($dependency);
-//
-//            }, $serviceDefinition['arguments'] ?? []);
-//
-//            $serviceObject = Initializer::load($serviceId, $arguments);
-//
-//            if (null === $serviceObject) {
-//                continue;
-//            }
-//
-//            $container->set($serviceId, $serviceObject);
-//        }
+        //$this->loadServices($config, $container);
 
         $entityManager = Initializer::load(EntityManager::class, [$config]);
         $container->set(EntityManager::class, $entityManager);
@@ -226,5 +199,45 @@ class Kernel
                 fn($item) => str_ends_with($item, 'Subscriber.php')
             )
         );
+    }
+
+    /**
+     * @param Config $config
+     * @param Container $container
+     *
+     * @return void
+     *
+     * @throws ContainerException
+     * @throws NotFoundException
+     */
+    private static function loadServices(Config $config, Container $container): void
+    {
+        $services = $config->get('services') ?? [];
+
+        foreach ($services as $serviceId => $serviceDefinition) {
+            if (is_int($serviceId)) {
+                $serviceId = $serviceDefinition;
+            }
+
+            if ($container->has($serviceId)) {
+                continue;
+            }
+
+            $arguments = array_map(static function ($dependency) use ($container) {
+
+                return ($container->has($dependency))
+                    ? $container->get($dependency)
+                    : Initializer::load($dependency);
+
+            }, $serviceDefinition['arguments'] ?? []);
+
+            $serviceObject = Initializer::load($serviceId, $arguments);
+
+            if (null === $serviceObject) {
+                continue;
+            }
+
+            $container->set($serviceId, $serviceObject);
+        }
     }
 }
