@@ -82,7 +82,7 @@ class Config
         $types     = ['app', 'routes', 'plugins'];
         $configDir = realpath('./../config');
 
-        Assertion::string($configDir, 'Couldn\'t read config directory.');
+        Assertion::string($configDir, 'Could not read config directory.');
 
         $this->config = $config;
 
