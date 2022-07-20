@@ -24,6 +24,7 @@
     "ext-pdo": "*",
     "ext-json": "*",
     "ext-curl": "*",
+    "ext-simplexml": "*",
     "ext-readline": "*",
     "apix/log": "1.2.1",
     "tflori/orm": "v1.9.0",

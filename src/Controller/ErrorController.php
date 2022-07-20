@@ -41,7 +41,6 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
     public function onException(Throwable $t): string
     {
         if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-
             $this->getObserver()->notify(new ExceptionEvent($t));
             return $this->render('/error/404.phtml')->getBody();
         }
