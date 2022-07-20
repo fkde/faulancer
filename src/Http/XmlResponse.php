@@ -20,29 +20,35 @@ class XmlResponse extends Response
      */
     private function toXml(array $data): string
     {
-        $xml = new \SimpleXMLElement('<?xml version="1.0"?><root></root>');
+        $xml = new \SimpleXMLElement('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
         $this->createNodes($xml, $data);
-        return $xml->asXML();
+        return html_entity_decode($xml->asXML());
     }
 
-    private function createNodes($xml, $data)
+    private function createNodes(\SimpleXMLElement $xml, $data)
     {
         foreach ($data as $key => $payload) {
 
-            if (empty($key)) {
-                //continue;
-            }
-
-            if (!is_array($payload)) {
-                $xml->addChild($key, $payload);
+            if (is_string($payload) && !empty($payload)) {
+                $xml->addChild(html_entity_decode($key), $payload);
                 continue;
             }
 
-            $childKey = key($payload);
-            $parent = new \SimpleXMLElement(sprintf('<%s></%s>', $childKey, $childKey));
-            $children = $this->createNodes($parent, $payload);
-            $result = preg_replace( "/<\?xml.+?\?>/", "", $parent->asXml());
-            $xml->addChild($childKey, $result);
+            // sequential array
+            if (is_array($payload) && count($payload) && is_numeric($key)) {
+                $this->createNodes($xml, $payload);
+                continue;
+            }
+
+            if (is_array($payload) && count($payload) && !is_numeric($key)) {
+                $parent = new \SimpleXMLElement(sprintf('<%s></%s>', $key, $key));
+                $list = $this->createNodes($parent, $payload);
+                $result = preg_replace( '/<\?xml.+?\?>/', '', $list->asXml());
+                $result = preg_replace('/<' . $key . '>(.*)<\/' . $key . '>/', '$1', $result);
+                $xml->addChild($key, $result);
+                continue;
+            }
+
         }
 
         return $xml;

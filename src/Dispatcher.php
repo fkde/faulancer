@@ -8,6 +8,7 @@ use Faulancer\Service\User;
 use Faulancer\Service\Session;
 use Assert\AssertionFailedException;
 use Faulancer\Database\EntityManager;
+use Faulancer\Value\Language;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -203,6 +204,18 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
     private function matchLanguagePath(string $path, array $configPaths): array
     {
         foreach ($configPaths as $lang => $configPath) {
+
+            if (empty(Language::$isoCodes[$lang])) {
+                $this->getLogger()->error(
+                    sprintf(
+                        'Invalid language key in route configuration. Path is %s. Allowed languages are %s.',
+                        $path,
+                        join(',', array_keys(Language::$isoCodes))
+                    )
+                );
+                continue;
+            }
+
             if ($matches = $this->matchPath($path, $configPath)) {
                 $this->config->setLanguage($lang);
                 return $matches;
