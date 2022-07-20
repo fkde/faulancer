@@ -19,6 +19,20 @@ use Faulancer\Exception\FileNotFoundException;
 use Faulancer\Service\Aware\LoggerAwareInterface;
 use Faulancer\Service\Aware\ConfigAwareInterface;
 
+/**
+ * Class Renderer
+ * @package Faulancer\View
+ * @author  Florian Knapp <office@florianknapp.de>
+ *
+ * @method void block(string $name)
+ * @method void endBlock(string $name)
+ * @method string date(string $date = '')
+ * @method Environment environment()
+ * @method null|string language(bool $asISO = false)
+ * @method void layout(string $path)
+ * @method string link(string $routeName, array $attributes = [], string $linkTextAdditional = '')
+ *
+ */
 class Renderer implements LoggerAwareInterface, ConfigAwareInterface, EnvironmentAwareInterface
 {
     use LoggerAwareTrait;
