@@ -149,8 +149,10 @@ class Kernel
         } catch (FrameworkException $e) {
             echo $errorController->onException($e);
         } catch (\ParseError | \Error $p) {
-            $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
+            echo $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
         }
+
+
     }
 
     /**

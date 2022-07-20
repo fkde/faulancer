@@ -204,6 +204,7 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
     {
         foreach ($configPaths as $lang => $configPath) {
             if ($matches = $this->matchPath($path, $configPath)) {
+                $this->config->setLanguage($lang);
                 return $matches;
             }
         }
