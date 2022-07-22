@@ -2,6 +2,7 @@
 
 namespace Faulancer;
 
+use Assert\AssertionFailedException;
 use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
@@ -143,7 +144,7 @@ class Kernel
 
             echo $response->getBody();
 
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException | AssertionFailedException $e) {
             header('HTTP/2 404 Not found');
             echo $errorController->onException($e);
         } catch (FrameworkException $e) {
