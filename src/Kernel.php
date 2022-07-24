@@ -195,7 +195,7 @@ class Kernel
     private static function loadSubscribers(string $directory):? array
     {
         if (!is_dir($directory)) {
-            return null;
+            return [];
         }
 
         return array_map(
