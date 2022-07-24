@@ -26,9 +26,4 @@ class RequestEvent extends AbstractEvent
         return $this->request;
     }
 
-    public static function getName(): string
-    {
-        return 'request.created';
-    }
-
 }

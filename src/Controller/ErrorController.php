@@ -56,31 +56,17 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
      * @param array|null $context
      *
      * @return string
-     * @throws FileNotFoundException
+     *
      * @throws FrameworkException
-     * @throws NotFoundException
-     * @throws TemplateException
-     * @throws ViewHelperException
      */
-    public function onError(int $code, string $message, string $file, int $line, ?array $context = null): string
+    public function onError(int $code, string $message, string $file, int $line, ?array $context = []): string
     {
-        $this->getLogger()->error($message, ['file' => $file, 'line' => $line]);
+        $this->getLogger()->error(
+            sprintf('%s in %s:%d', $message, $file, $line),
+            ['file' => $file, 'line' => $line]
+        );
 
-        if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-            $this->getObserver()->notify(
-                new ExceptionEvent(
-                    new FrameworkException($message, [
-                        'file' => $file,
-                        'line' => $line,
-                        'originalContext' => $context
-                    ])
-                )
-            );
-            return $this->render('/error/404.phtml')->getBody();
-        }
-
-        $err = new \ErrorException($message, $code, 1, $file, $line);
-        return $this->renderStacktrace($err, self::TYPE_ERROR);
+        throw new FrameworkException($message, $context, $code);
     }
 
     /**

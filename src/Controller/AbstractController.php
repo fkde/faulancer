@@ -117,19 +117,14 @@ abstract class AbstractController implements HttpFactoryAwareInterface
     {
         $this->logger->debug('Start rendering of template "' . $template . '".');
 
-        try {
-            $this->getRenderer()->setTemplate($template);
-            $this->getRenderer()->setVariables($variables);
+        $this->getRenderer()->setTemplate($template);
+        $this->getRenderer()->setVariables($variables);
 
-            $this->addDefaultAssets();
+        $this->addDefaultAssets();
 
-            $result = $this->getRenderer()->render();
+        $result = $this->getRenderer()->render();
 
-            $this->logger->debug('Successfully rendered template "' . $template . '".');
-        } catch (FrameworkException $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
-            throw $e;
-        }
+        $this->logger->debug('Successfully rendered template "' . $template . '".');
 
         return $this->createResponse($result);
     }

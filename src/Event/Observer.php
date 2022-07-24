@@ -11,6 +11,8 @@ class Observer implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+    private static int $interruptCounter = 0;
+
     private array $subscribers = [];
 
     /**
@@ -27,7 +29,7 @@ class Observer implements LoggerAwareInterface
          * @var string $method The method from the subscriber which should be called
          */
         foreach ($events as $event => $method) {
-            $this->subscribers[$event::getName()][$method][] = $subscriber;
+            $this->subscribers[$event][$method][] = $subscriber;
         }
     }
 
@@ -37,11 +39,21 @@ class Observer implements LoggerAwareInterface
      */
     public function notify(AbstractEvent $event): object|string|array|int|null
     {
+        if ($event instanceof InterruptEvent) {
+            static::$interruptCounter++;
+            if (static::$interruptCounter > 1) {
+                $this->getLogger()->info('Interrupt loop detected. Abort.');
+                return null;
+            }
+        }
+
+        $eventThrownName = get_class($event);
+
         try {
             foreach ($this->subscribers as $eventName => $payload) {
 
                 // Search for matching events
-                if ($eventName !== $event->getName()) {
+                if ($eventName !== $eventThrownName) {
                     continue;
                 }
 
@@ -49,8 +61,8 @@ class Observer implements LoggerAwareInterface
                 foreach ($payload as $method => $subscriberList) {
                     foreach ($subscriberList as $subscriber) {
                         $result = $subscriber->$method($event);
-
                         if (null !== $result) {
+                            self::notify(new InterruptEvent($result));
                             return $result;
                         }
                     }

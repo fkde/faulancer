@@ -23,7 +23,6 @@ class Layout extends AbstractViewHelper
     {
         /** @var Renderer $parentRenderer */
         $parentRenderer = Initializer::load(Renderer::class);
-        //$parentRenderer->reset();
         $parentRenderer->setTemplate($template);
 
         $this->getRenderer()->setParentView($parentRenderer);
