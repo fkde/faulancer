@@ -15,20 +15,22 @@ class AssetList extends AbstractViewHelper
 
         $pattern = match ($type) {
             'js'  => '<script src="%s"></script>',
+            'mjs' => '<script type="module" src="%s"></script>',
             'css' => '<link rel="stylesheet" type="text/css" href="%s">',
             default => '',
         };
 
         /** @var array $files */
 
-        $files = $this->getRenderer()->getVariable('assets' . ucfirst($type));
+        $files = $this->getRenderer()->getVariable('_assets')[$type] ?? null;
 
-        if (empty($files)) {
+        if (null === $files) {
+            $this->getLogger()->info('There aren\'t any assets linked to this renderer.');
             return '';
         }
 
         if ($type === 'css' && $optimize) {
-            $result  = '<style type="text/css">';
+            $result  = '<style>';
             $result .= $this->collectAssetsContent($files, $type);
             $result .= '</style>';
             return $result;
@@ -48,6 +50,7 @@ class AssetList extends AbstractViewHelper
 
         return $result;
     }
+
     /**
      * Collect all assets content for concatenation
      *

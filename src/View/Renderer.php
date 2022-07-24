@@ -2,22 +2,25 @@
 
 namespace Faulancer\View;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Faulancer\Config;
-use Faulancer\Exception\ContainerException;
-use Faulancer\Exception\FrameworkException;
 use Faulancer\Initializer;
-use Faulancer\Exception\NotFoundException;
+use Faulancer\Service\Session;
+use Faulancer\Value\Asset;
+use Faulancer\View\Helper\User;
+use Faulancer\Service\Environment;
 use Faulancer\Exception\TemplateException;
+use Faulancer\Exception\FrameworkException;
 use Faulancer\Exception\ViewHelperException;
 use Faulancer\Service\Aware\ConfigAwareTrait;
-use Faulancer\Service\Aware\EnvironmentAwareInterface;
-use Faulancer\Service\Aware\EnvironmentAwareTrait;
 use Faulancer\Service\Aware\LoggerAwareTrait;
-use Faulancer\Service\Environment;
 use Faulancer\View\Helper\AbstractViewHelper;
 use Faulancer\Exception\FileNotFoundException;
 use Faulancer\Service\Aware\LoggerAwareInterface;
 use Faulancer\Service\Aware\ConfigAwareInterface;
+use Faulancer\Service\Aware\EnvironmentAwareTrait;
+use Faulancer\Service\Aware\EnvironmentAwareInterface;
 
 /**
  * Class Renderer
@@ -31,6 +34,12 @@ use Faulancer\Service\Aware\ConfigAwareInterface;
  * @method null|string language(bool $asISO = false)
  * @method void layout(string $path)
  * @method string link(string $routeName, array $attributes = [], string $linkTextAdditional = '')
+ * @method string path(string $routeName, array $attributes = [])
+ * @method Session session()
+ * @method string showMessage(string $id)
+ * @method string templateComponent(string $component, array $variables = [])
+ * @method string translate(string $key, array $variables = [])
+ * @method User user()
  *
  */
 class Renderer implements LoggerAwareInterface, ConfigAwareInterface, EnvironmentAwareInterface
@@ -57,7 +66,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
      */
     public function setTemplate(string $template = ''): self
     {
-        $templatePath = realpath($this->config->get('app:template:path'));
+        $templatePath = realpath($this->config->get('app:templates:path'));
 
         $templateFile = ltrim($template, DIRECTORY_SEPARATOR);
         $template     = rtrim($templatePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $templateFile;
@@ -74,10 +83,25 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
     }
 
     /**
-     * Add javascript from outside
+     * @param string $file
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function addAsset(string $file): self
+    {
+        $extension = substr($file, strrpos($file, '.') + 1);
+        Assertion::choice($extension, [Asset::CSS, Asset::JS, Asset::MJS]);
+        $this->variables['_assets'][$extension][] = $file;
+        return $this;
+    }
+
+    /**
+     * Add javascript file
      *
      * @param string $file
      * @return self
+     * @deprecated This method will be removed in further releases. Use `addAsset` instead.
      */
     public function addScript(string $file): self
     {
@@ -90,6 +114,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
      *
      * @param string $file
      * @return self
+     * @deprecated This method will be removed in further releases. Use `addAsset` instead.
      */
     public function addStylesheet(string $file): self
     {
@@ -207,7 +232,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
         // Dev environment
         $this->logger->debug('Remove unnecessary spaces and tabs from output.');
-        return str_replace(["\t", "\t", "\r", "\n\n"], " ", $output);
+        return str_replace(["\t", "\r", "\n\n"], " ", $output);
     }
 
     /**
@@ -240,8 +265,6 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
             if ($this->getEnvironment()->get() === Environment::DEVELOPMENT) {
                 throw $e;
             }
-        } finally {
-            $this->clearOutputBuffer();
         }
 
         if ($this->getParentView() instanceof Renderer) {
@@ -277,19 +300,11 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
             throw new ViewHelperException(sprintf('No view helper for "%s" found.', $name));
         }
 
-        try {
+        /** @var AbstractViewHelper $class */
+        $class = Initializer::load($viewHelper, [$this, $this->config]);
 
-            /** @var AbstractViewHelper $class */
-            $class = Initializer::load($viewHelper, [$this, $this->config]);
+        return call_user_func_array([$class, '__invoke'], $arguments);
 
-            return call_user_func_array([$class, '__invoke'], $arguments);
-
-        } catch (FrameworkException $e) {
-            $this->getLogger()->error($e->getMessage(), ['exception' => $e]);
-            if ($this->getEnvironment()->get() === Environment::DEVELOPMENT) {
-                throw new ViewHelperException($e->getMessage(), [], $e->getCode(), $e);
-            }
-        }
     }
 
     /**
@@ -298,6 +313,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
     public function reset(): void
     {
         unset($this->variables, $this->template);
+        //$this->clearOutputBuffer();
     }
 
     public function __destruct()

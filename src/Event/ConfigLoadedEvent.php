@@ -28,9 +28,4 @@ class ConfigLoadedEvent extends AbstractEvent
         return $this->config;
     }
 
-    public static function getName(): string
-    {
-        return 'config.loaded';
-    }
-
 }

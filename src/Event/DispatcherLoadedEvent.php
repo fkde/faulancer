@@ -18,14 +18,6 @@ class DispatcherLoadedEvent extends AbstractEvent
     }
 
     /**
-     * @return string
-     */
-    public static function getName(): string
-    {
-        return 'dispatcher.loaded';
-    }
-
-    /**
      * @return Dispatcher
      */
     public function getDispatcher(): Dispatcher

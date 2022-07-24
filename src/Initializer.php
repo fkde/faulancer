@@ -41,18 +41,19 @@ class Initializer
     /**
      * @param string $className
      * @param array  $constructorArgs
+     * @param bool   $newInstance
      *
      * @return object|null
      * @throws Exception\ContainerException
      * @throws NotFoundException
      */
-    public static function load(string $className, array $constructorArgs = []): ?object
+    public static function load(string $className, array $constructorArgs = [], bool $newInstance = false): ?object
     {
         try {
             Assert::that($className)->classExists();
             Assert::that($className)->objectOrClass('You probably tried to initialize an Interface: %s.');
 
-            if (self::$container->has($className)) {
+            if (self::$container->has($className) && false === $newInstance) {
                 return self::$container->get($className);
             }
 
@@ -76,12 +77,13 @@ class Initializer
                 $obj->$setter($awareInterfaceDependencyObject);
             }
 
-            self::$container->set($className, $obj);
+            if (false === $newInstance) {
+                self::$container->set($className, $obj);
+            }
 
             return $obj;
 
         } catch (ReflectionException | InvalidArgumentException $e) {
-            echo $e->getMessage();
             throw new NotFoundException($e->getMessage(), [], $e->getCode(), $e->getPrevious());
         }
     }

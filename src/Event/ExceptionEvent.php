@@ -8,11 +8,6 @@ class ExceptionEvent extends AbstractEvent
 {
     private Throwable $throwable;
 
-    public static function getName(): string
-    {
-        return 'exception.thrown';
-    }
-
     /**
      * @param Throwable $throwable
      */

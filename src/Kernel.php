@@ -2,8 +2,6 @@
 
 namespace Faulancer;
 
-use Assert\AssertionFailedException;
-use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
 use Nyholm\Psr7\Request;
@@ -15,6 +13,7 @@ use Faulancer\Http\HttpFactory;
 use Faulancer\Event\RequestEvent;
 use Faulancer\Service\Translator;
 use Faulancer\Service\Environment;
+use Assert\AssertionFailedException;
 use Faulancer\Database\EntityManager;
 use Faulancer\Event\ConfigLoadedEvent;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +26,6 @@ use Faulancer\Exception\TemplateException;
 use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Nyholm\Psr7Server\ServerRequestCreator;
-use Faulancer\Exception\ViewHelperException;
 
 class Kernel
 {
@@ -144,15 +142,16 @@ class Kernel
 
             echo $response->getBody();
 
-        } catch (NotFoundException | AssertionFailedException $e) {
+        } catch (NotFoundException $e) {
             header('HTTP/2 404 Not found');
             echo $errorController->onException($e);
-        } catch (FrameworkException $e) {
+        } catch (AssertionFailedException | FrameworkException $e) {
+            header('HTTP/2 500 Server error');
             echo $errorController->onException($e);
         } catch (\ParseError | \Error $p) {
+            header('HTTP/2 500 Server error');
             echo $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
         }
-
 
     }
 
@@ -196,7 +195,7 @@ class Kernel
     private static function loadSubscribers(string $directory):? array
     {
         if (!is_dir($directory)) {
-            return null;
+            return [];
         }
 
         return array_map(

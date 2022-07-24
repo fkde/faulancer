@@ -10,7 +10,7 @@ class Block extends AbstractViewHelper
     public function __invoke(string $name)
     {
         if ($this->getRenderer()->getParentView()->hasVariable($name)) {
-            $this->getLogger()->notice('Opening block view helper failed. Expected block variable is already present.');
+            $this->getLogger()->error('Opening block view helper failed. Expected block variable is already present.');
             return;
         }
 

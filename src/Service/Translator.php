@@ -2,17 +2,21 @@
 
 namespace Faulancer\Service;
 
+use Faulancer\Event\TranslationMissingEvent;
 use Faulancer\Exception\FileNotFoundException;
 use Faulancer\Exception\FrameworkException;
 use Faulancer\Service\Aware\ConfigAwareTrait;
 use Faulancer\Service\Aware\LoggerAwareTrait;
 use Faulancer\Service\Aware\ConfigAwareInterface;
 use Faulancer\Service\Aware\LoggerAwareInterface;
+use Faulancer\Service\Aware\ObserverAwareInterface;
+use Faulancer\Service\Aware\ObserverAwareTrait;
 
-class Translator implements ConfigAwareInterface, LoggerAwareInterface
+class Translator implements ConfigAwareInterface, LoggerAwareInterface, ObserverAwareInterface
 {
     use ConfigAwareTrait;
     use LoggerAwareTrait;
+    use ObserverAwareTrait;
 
     private ?string $country;
 
@@ -44,7 +48,7 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface
         if (null === $this->country) {
             throw new FrameworkException('Language identifier could not be found.', [
                 'additionalOptions' => [
-                    'Are the translation files existing?'
+                    'Are the translation files correctly created?'
                 ]
             ]);
         }
@@ -56,6 +60,7 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface
         $translatedString = $this->translationData[$translationKey] ?? null;
 
         if (null === $translatedString) {
+            $this->getObserver()->notify(new TranslationMissingEvent($translationKey, $this->translationData));
             return $translationKey;
         }
 
