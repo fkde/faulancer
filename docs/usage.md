@@ -1,6 +1,0 @@
----
-tags:
-  - Setup
----
-
-# Basic Usage
