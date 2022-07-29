@@ -157,9 +157,95 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Installation
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create_env_file" class="md-nav__link">
+    Create .env file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory_structure" class="md-nav__link">
+    Directory structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Directory structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the_bin_folder" class="md-nav__link">
+    The "bin" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_config_folder" class="md-nav__link">
+    The "config" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_logs_folder" class="md-nav__link">
+    The "logs" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_public_folder" class="md-nav__link">
+    The "public" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_src_folder" class="md-nav__link">
+    The "src" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_templates_folder" class="md-nav__link">
+    The "templates" folder
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1003,6 +1089,76 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#create_env_file" class="md-nav__link">
+    Create .env file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory_structure" class="md-nav__link">
+    Directory structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Directory structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the_bin_folder" class="md-nav__link">
+    The "bin" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_config_folder" class="md-nav__link">
+    The "config" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_logs_folder" class="md-nav__link">
+    The "logs" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_public_folder" class="md-nav__link">
+    The "public" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_src_folder" class="md-nav__link">
+    The "src" folder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the_templates_folder" class="md-nav__link">
+    The "templates" folder
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1019,12 +1175,100 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h1>
-<p>Install through composer (recommended):</p>
+<p>Install through composer:</p>
 <pre><code class="language-bash">composer require fkde/faulancer
 </code></pre>
-<p>Install manually:</p>
-<pre><code class="language-bash">
+<h2 id="create_env_file">Create .env file<a class="headerlink" href="#create_env_file" title="Permanent link">¶</a></h2>
+<p>Create a file named <code>.env</code> within the <code>app/</code> directory.</p>
+<h2 id="directory_structure">Directory structure<a class="headerlink" href="#directory_structure" title="Permanent link">¶</a></h2>
+<p>In the future this will be automated, but currently you have to define 
+the application structure by yourself.</p>
+<pre><code class="language-bash">app/
+  bin/
+    console
+  config/
+    app.conf.php
+    routes.conf.php
+  logs/
+  public/
+  src/
+  templates/
+  .env
 </code></pre>
+<p>Let's go through this step by step.</p>
+<h3 id="the_bin_folder">The "bin" folder<a class="headerlink" href="#the_bin_folder" title="Permanent link">¶</a></h3>
+<p>In this directory lives the <code>console</code> application. This file also has to be created 
+by you. Create a file named <code>console</code> (without any extensions) and put the following 
+content in there:</p>
+<pre><code class="language-php">#!/usr/bin/php
+
+&lt;?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+[$config, $entityManager, $logger, $container] = \Faulancer\Kernel::bootDefaults();
+
+$console = new \Faulancer\Console($container);
+$console-&gt;setConfig($config);
+$console-&gt;setEntityManager($entityManager);
+$console-&gt;setLogger($logger);
+
+$console-&gt;handle($argv);
+</code></pre>
+<h3 id="the_config_folder">The "config" folder<a class="headerlink" href="#the_config_folder" title="Permanent link">¶</a></h3>
+<p>Currently there are two files neccessary. The <code>app.conf.php</code> and the <code>routes.conf.php</code>.</p>
+<pre><code class="language-php">&lt;?php
+
+// app.conf.php
+
+return [
+    'logs' =&gt; [
+        'path' =&gt; __DIR__ . '/../logs/',
+        'minLevel' =&gt; 'ENV:LOG_MIN_LEVEL'
+    ],
+    'templates' =&gt; [
+        'path' =&gt; __DIR__ . '/../templates'
+    ],
+    'database' =&gt; [
+        'user' =&gt; 'ENV:MYSQL_USER',
+        'pass' =&gt; 'ENV:MYSQL_PASS',
+        'db'   =&gt; 'ENV:MYSQL_DB',
+        'host' =&gt; 'ENV:MYSQL_HOST'
+    ],
+    'translation' =&gt; [
+        'path' =&gt; __DIR__ . '/../translations/'
+    ]
+];
+
+</code></pre>
+<pre><code class="language-php">&lt;?php
+
+// routes.conf.php
+
+return [
+    'home' =&gt; [
+        'path' =&gt; '/',
+        'class' =&gt; \App\Controller\ExampleController::class,
+        'action' =&gt; 'example'
+    ]
+];
+
+</code></pre>
+<h3 id="the_logs_folder">The "logs" folder<a class="headerlink" href="#the_logs_folder" title="Permanent link">¶</a></h3>
+<p>The logs folder is the home of our useful hints when something isn't 
+working the way it is expected. The whole framework writes logs for various 
+events, so there is mostly always some hint in there.</p>
+<p>When the Kernel is booted, the log files for the specific environment are 
+also created automatically if there aren't any present.</p>
+<h3 id="the_public_folder">The "public" folder<a class="headerlink" href="#the_public_folder" title="Permanent link">¶</a></h3>
+<p>This is the public part of your application. Everything which should be 
+publicly visible, should be put in there. This goes from assets like CSS, JavaScript
+ and Images to even more specific ones like search engine validation scripts.</p>
+<h3 id="the_src_folder">The "src" folder<a class="headerlink" href="#the_src_folder" title="Permanent link">¶</a></h3>
+<p>When you're asking yourself, where does my business logic live, this is the place to be. 
+In there is everything beginning from the Controllers over to the ViewHelpers.</p>
+<h3 id="the_templates_folder">The "templates" folder<a class="headerlink" href="#the_templates_folder" title="Permanent link">¶</a></h3>
+<p>Here you're able to put in your templates. More on this topic in the Templates section.</p>
 
               
             </article>
