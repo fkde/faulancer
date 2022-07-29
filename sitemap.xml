@@ -6,17 +6,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://fkde.github.io/faulancer/initialConfiguration/</loc>
+         <lastmod>2022-07-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://fkde.github.io/faulancer/installation/</loc>
          <lastmod>2022-07-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fkde.github.io/faulancer/tags/</loc>
-         <lastmod>2022-07-29</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://fkde.github.io/faulancer/usage/</loc>
          <lastmod>2022-07-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -242,6 +242,11 @@
     </url>
     <url>
          <loc>https://fkde.github.io/faulancer/cookbook/BasicService/</loc>
+         <lastmod>2022-07-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://fkde.github.io/faulancer/cookbook/basicRoute/</loc>
          <lastmod>2022-07-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
