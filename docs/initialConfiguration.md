@@ -1,8 +1,8 @@
-## Create .env file
+## Create dotenv file
 
 Create a file named `.env` within the `app/` directory.
 
-## Directory structure
+## Explaining the directory structure
 
 In the future this will be automated, but currently you have to define
 the application structure by yourself.
@@ -21,7 +21,7 @@ app/
   .env
 ```
 
-### Let's go through this step by step:
+**Let's go through this step by step.**
 
 ### `bin/`
 
