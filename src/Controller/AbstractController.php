@@ -5,12 +5,14 @@ namespace Faulancer\Controller;
 use Assert\Assert;
 use Apix\Log\Logger;
 use Faulancer\Config;
+use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Faulancer\View\Renderer;
 use Faulancer\Model\Role;
 use Faulancer\Initializer;
 use Faulancer\Service\Aware\HttpFactoryAwareInterface;
 use Faulancer\Service\Aware\HttpFactoryAwareTrait;
+use Faulancer\View\View;
 use ORM\Exception\NoEntity;
 use Faulancer\Service\Session;
 use Faulancer\Database\EntityManager;
@@ -39,7 +41,7 @@ abstract class AbstractController implements HttpFactoryAwareInterface
 
     private EntityManager $em;
 
-    private array $renderer = [];
+    private array $views = [];
 
     /**
      * @param RequestInterface $request
@@ -117,12 +119,12 @@ abstract class AbstractController implements HttpFactoryAwareInterface
     {
         $this->logger->debug('Start rendering of template "' . $template . '".');
 
-        $this->getRenderer()->setTemplate($template);
-        $this->getRenderer()->setVariables($variables);
+        $this->getView()->setTemplate($template);
+        $this->getView()->setVariables($variables);
 
         $this->addDefaultAssets();
 
-        $result = $this->getRenderer()->render();
+        $result = $this->getView()->render();
 
         $this->logger->debug('Successfully rendered template "' . $template . '".');
 
@@ -162,9 +164,10 @@ abstract class AbstractController implements HttpFactoryAwareInterface
 
     /**
      * @param string $className
-     * @return AbstractBuilder
      *
+     * @return AbstractBuilder
      * @throws NotFoundException
+     * @throws ContainerException
      */
     protected function createForm(string $className): AbstractBuilder
     {
@@ -175,20 +178,20 @@ abstract class AbstractController implements HttpFactoryAwareInterface
     }
 
     /**
-     * @return Renderer
-     *
+     * @return View
+     * @throws ContainerException
      * @throws NotFoundException
      */
-    protected function getRenderer(): Renderer
+    protected function getView(): View
     {
         $identifier = get_called_class();
 
-        if (empty($this->renderer[$identifier])) {
-            $renderer = Initializer::load(Renderer::class);
-            $this->renderer[$identifier] = $renderer;
+        if (empty($this->views[$identifier])) {
+            $view = Initializer::load(View::class);
+            $this->views[$identifier] = $view;
         }
 
-        return $this->renderer[$identifier];
+        return $this->views[$identifier];
     }
 
     /**

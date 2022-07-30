@@ -18,8 +18,9 @@ plugins:
       tags_file: tags.md
 
 nav:
-  - Installation: installation.md
-  - Basic usage: usage.md
+  - Setup:
+    - Installation: installation.md
+    - Configure: initialConfiguration.md
   - Components:
     - Assets:
       - Images: components/assets/images.md
@@ -57,6 +58,7 @@ nav:
     - Security: components/security.md
     - Session: components/session.md
   - Cookbook:
+    - Define a route: cookbook/basicRoute.md
     - Create a controller: cookbook/basicController.md
     - Build a form: cookbook/basicForm.md
     - Create a service: cookbook/basicService.md
