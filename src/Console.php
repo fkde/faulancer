@@ -43,7 +43,11 @@ class Console
 
     /**
      * @param array $parameters
+     *
+     * @return int
+     *
      * @throws ConsoleException
+     * @throws Exception\ContainerException
      * @throws NotFoundException
      */
     private function run(array $parameters): int
@@ -87,7 +91,7 @@ class Console
             $object->run($input, $output);
 
         } catch (ConsoleException $e) {
-            $output->writeLine($e->getMessage(), 'error');
+            print $e->getMessage();
             print PHP_EOL;
             return 1;
         }

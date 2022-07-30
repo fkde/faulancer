@@ -251,7 +251,7 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
             extract($this->variables, EXTR_OVERWRITE);
 
-            $this->logger->debug('Opening output buffering for template "' . $this->template . '"');
+            $this->logger->debug('Opening output buffer for template "' . $this->template . '"');
             ob_start();
 
             include $this->getTemplate();

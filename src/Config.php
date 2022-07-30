@@ -2,6 +2,7 @@
 
 namespace Faulancer;
 
+use Assert\Assert;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 use Faulancer\Exception\FileNotFoundException;
@@ -9,23 +10,21 @@ use Faulancer\Exception\FrameworkException;
 
 class Config
 {
-
-
     private const DOTENV_PATH = './../.env';
     private const DOTENV_LOCAL_PATH = './../.env.local';
+
+    private const CONFIG_PATH = './../config';
 
     private array $config;
 
     /**
-     * @param array $config
-     *
      * @throws AssertionFailedException
      * @throws FileNotFoundException
      */
-    public function __construct(array $config = [])
+    public function __construct()
     {
         $this->loadDotEnv();
-        $this->loadConfig($config);
+        $this->loadConfig();
     }
 
     /**
@@ -72,29 +71,22 @@ class Config
     }
 
     /**
-     * @param array $config
-     *
      * @return void
+     * @throws AssertionFailedException
      * @throws FileNotFoundException
      */
-    private function loadConfig(array $config = []): void
+    private function loadConfig(): void
     {
-        $types     = ['app', 'routes', 'plugins'];
-        $configDir = realpath('./../config');
+        $types     = ['app', 'routes'];
+        $configDir = realpath(self::CONFIG_PATH);
 
-        Assertion::string($configDir, 'Could not read config directory.');
-
-        $this->config = $config;
+        Assert::that($configDir)->directory('Could not read config directory.');
 
         foreach ($types as $type) {
             $configFile = sprintf('/%s.conf.php', $type);
             $configFilePath = $configDir . $configFile;
 
-            if (false === file_exists($configFilePath)) {
-                throw new FileNotFoundException(
-                    sprintf('Missing configuration file: %s', $type)
-                );
-            }
+            Assert::that($configFilePath)->file();
 
             $contents = require $configFilePath;
 
@@ -110,7 +102,6 @@ class Config
 
     /**
      * @return void
-     * @throws AssertionFailedException
      */
     private function loadDotEnv(): void
     {
@@ -131,7 +122,7 @@ class Config
             $envFileExists = true;
         }
 
-        Assertion::true($envFileExists, 'Couldn\'t read .env file.');
+        Assert::that($envFileExists)->true('Could not read .env file.');
 
         foreach ($dotEnvContents as $key => $value) {
             putenv(sprintf('%s=%s', $key, $value));

@@ -25,12 +25,11 @@ class TokenSubscriber extends AbstractSubscriber implements LoggerAwareInterface
     {
         $token = $event->getRequest()->getHeader('x-token');
 
-        if (null === $token) {
+        if (empty($token)) {
             $this->getLogger()->debug('No token in request detected.');
             return null;
         }
 
-        return 'Test';
-
+        return null;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Faulancer;
 
+use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
 use Nyholm\Psr7\Request;
@@ -80,7 +81,7 @@ class Kernel
      * @throws Exception\ViewHelperException
      * @throws NotFoundException
      * @throws TemplateException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function boot(): void
     {
@@ -144,13 +145,20 @@ class Kernel
 
         } catch (NotFoundException $e) {
             header('HTTP/2 404 Not found');
-            echo $errorController->onException($e);
+            echo null !== $errorController
+                ? $errorController->onException($e)
+                : $e->getMessage();
         } catch (AssertionFailedException | FrameworkException $e) {
             header('HTTP/2 500 Server error');
-            echo $errorController->onException($e);
+            echo null !== $errorController
+                ? $errorController->onException($e)
+                : $e->getMessage();
         } catch (\ParseError | \Error $p) {
+            var_dump("Hallo");die();
             header('HTTP/2 500 Server error');
-            echo $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine());
+            echo null !== $errorController
+                ? $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine())
+                : $p->getMessage();
         }
 
     }

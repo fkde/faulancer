@@ -3,6 +3,7 @@
 namespace Faulancer\Form\Type;
 
 use Assert\Assert;
+use Faulancer\Exception\FrameworkException;
 use Faulancer\Form\AbstractType;
 
 class Button extends AbstractType
@@ -20,6 +21,7 @@ class Button extends AbstractType
 
     /**
      * @return string
+     * @throws FrameworkException
      */
     public function render(): string
     {
