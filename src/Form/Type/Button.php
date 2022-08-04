@@ -32,7 +32,7 @@ class Button extends AbstractType
                 continue;
             }
 
-            $result .= sprintf(' %s="%s"', $attribute, $this->getTranslator()->translate($value));
+            $result .= sprintf(' %s="%s', $attribute, $this->getTranslator()->translate($value));
         }
 
         $result .= '">' . $this->getTranslator()->translate($this->definition['text']) . '</button>';

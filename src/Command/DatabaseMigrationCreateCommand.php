@@ -32,7 +32,11 @@ class DatabaseMigrationCreateCommand extends AbstractCommand implements EntityMa
         $timestamp = time();
         $template  = $this->buildTemplate($timestamp);
 
-        $migrationsDir = __DIR__ . '/../../../src/Migration';
+        if (!is_dir('./../src/Migration')) {
+            mkdir('./../src/Migration');
+        }
+
+        $migrationsDir = realpath('./../src/Migration');
         $filename      = sprintf('Migration%s.php', $timestamp);
 
         file_put_contents(sprintf('%s/%s', $migrationsDir, $filename), $template);
@@ -53,8 +57,8 @@ class DatabaseMigrationCreateCommand extends AbstractCommand implements EntityMa
 
 namespace App\Migration;
 
-use PDO;
-use Faulancer\Migration\AbstractMigration;
+use \PDO;
+use Faulancer\Database\Migration\AbstractMigration;
 
 class Migration{$timestamp} extends AbstractMigration
 {

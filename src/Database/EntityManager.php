@@ -13,9 +13,11 @@ class EntityManager extends ORMEntityManager
      */
     public function __construct(Config $config)
     {
-        $options = [
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        ];
+        if (defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+            $options = [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+            ];
+        }
         $dbConfig = $config->get('app:database');
         $dsn      = $dbConfig['dsn'] ?? null;
         $user     = $dbConfig['user'] ?? null;

@@ -26,7 +26,11 @@ class Csrf extends AbstractType
      */
     public function render(): string
     {
-        return sprintf('<input type="hidden" name="csrf" value="%s" />', $this->definition['value']);
+        return sprintf(
+            '<input type="hidden" name="csrf" data-id="%s" value="%s" />',
+            $this->definition['data-id'] ?? null,
+            $this->definition['value']
+        );
     }
 
 }

@@ -66,7 +66,9 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
             ['file' => $file, 'line' => $line]
         );
 
-        throw new FrameworkException($message, $context, $code);
+        $exception = new FrameworkException($message, $context, $code);
+
+        return $this->onException($exception);
     }
 
     /**

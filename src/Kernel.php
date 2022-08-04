@@ -154,11 +154,15 @@ class Kernel
                 ? $errorController->onException($e)
                 : $e->getMessage();
         } catch (\ParseError | \Error $p) {
-            var_dump("Hallo");die();
             header('HTTP/2 500 Server error');
             echo null !== $errorController
                 ? $errorController->onError($p->getCode(), $p->getMessage(), $p->getFile(), $p->getLine())
                 : $p->getMessage();
+        } catch (\Throwable $t) {
+            header('HTTP/2 500 Server error');
+            echo null !== $errorController
+                ? $errorController->onError($t->getCode(), $t->getMessage(), $t->getFile(), $t->getLine())
+                : $t->getMessage();
         }
 
     }
