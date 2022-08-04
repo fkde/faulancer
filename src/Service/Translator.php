@@ -59,8 +59,8 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface, Observer
 
         $translatedString = $this->translationData[$translationKey] ?? null;
 
-        if (null === $translatedString) {
-            $this->getObserver()->notify(new TranslationMissingEvent($translationKey, $this->translationData));
+        if (null !== $translationKey && null === $translatedString) {
+            $this->getObserver()->notify(new TranslationMissingEvent($translationKey, $this->translationData ?? []));
             return $translationKey;
         }
 

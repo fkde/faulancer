@@ -7,7 +7,7 @@ use ORM\Exception\NoConnection;
 use Faulancer\Command\Input\Input;
 use Faulancer\Command\Output\Output;
 use Faulancer\Exception\ConsoleException;
-use Faulancer\Migration\AbstractMigration;
+use Faulancer\Database\Migration\AbstractMigration;
 use Faulancer\Service\Aware\EntityManagerAwareTrait;
 use Faulancer\Service\Aware\EntityManagerAwareInterface;
 
@@ -48,7 +48,7 @@ class DatabaseMigrationCommand extends AbstractCommand implements EntityManagerA
 
         $em             = $this->getEntityManager();
         $connection     = $em->getConnection();
-        $migrationsPath = __DIR__ . '/../../../src/Migration';
+        $migrationsPath = realpath('./../src/Migration');
         $files          = array_diff(scandir($migrationsPath), ['.', '..']);
 
         $existingMigrations = $connection
@@ -148,23 +148,25 @@ class DatabaseMigrationCommand extends AbstractCommand implements EntityManagerA
     private function ensureMigrationTrackingIntegrity(Output $output): void
     {
         $connection = $this->getEntityManager()->getConnection();
+        try {
+            $query = $connection->query('SELECT * FROM `migration`');
+            $result = $query->fetchAll(\PDO::FETCH_COLUMN);
+        } catch (\Exception $e) {
+            $output->writeLine('(!) Creating migration table as it does not exist.', 'warning');
+            $output->writeEmptyLine();
 
-        $query  = $connection->query('SHOW TABLES');
-        $result = $query->fetchAll(\PDO::FETCH_COLUMN);
-
-        if (\in_array('migration', $result, true)) {
-            return;
-        }
-
-        $output->writeLine('(!) Creating migration table as it doesn\'t exist.', 'warning');
-        $output->writeEmptyLine();
-
-        $connection->exec(<<<SQL
-CREATE TABLE `migration`( 
-    id INT(12) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            $connection->exec(<<<SQL
+CREATE TABLE `migration`(
+    id INTEGER,
     name VARCHAR(32) NOT NULL,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    executedAt DATETIME NULL,
+    CONSTRAINT
+        migration_pk
+        PRIMARY KEY (id)
 )
 SQL);
+        }
+
     }
 }

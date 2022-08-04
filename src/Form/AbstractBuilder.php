@@ -3,6 +3,7 @@
 namespace Faulancer\Form;
 
 use Assert\Assert;
+use Faulancer\Exception\ContainerException;
 use Faulancer\Initializer;
 use Faulancer\Form\Type\Csrf;
 use Psr\Http\Message\RequestInterface;
@@ -34,8 +35,6 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
     private string $formId;
 
     /**
-     * AbstractBuilder constructor.
-     *
      * @param RequestInterface $request
      */
     public function __construct(RequestInterface $request)
@@ -47,6 +46,7 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
     /**
      * @return $this
      * @throws NotFoundException
+     * @throws ContainerException
      */
     public function build(): self
     {
@@ -57,7 +57,9 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
             $this->appendCsrfToken();
         }
 
-        $this->setFormAttributes($this->request->getUri()->getPath());
+        if (empty($this->formAttributes['action'])) {
+            $this->setFormAttributes($this->request->getUri()->getPath());
+        }
 
         if ($this->request->getMethod() === 'POST') {
             parse_str($this->request->getBody()->getContents(), $this->data);
@@ -90,9 +92,11 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
      * @param array  $definition
      * @param array  $validators
      *
+     * @return void
+     * @throws ContainerException
      * @throws NotFoundException
      */
-    protected function add(string $type, array $definition, array $validators = [])
+    protected function add(string $type, array $definition, array $validators = []): void
     {
         Assert::that($definition)->notEmptyKey('name', 'Attribute `name` is missing.');
         $this->fields[$definition['name']] = Initializer::load($type, [$definition, $validators]);
@@ -115,7 +119,7 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
             '<form method="%s" action="%s" enctype="%s">',
             $this->formAttributes['method'],
             $this->formAttributes['action'] ?? null,
-            $this->formAttributes['enctype']
+            $this->formAttributes['enctype'] ?? 'multipart/form-data'
         );
     }
 
@@ -129,18 +133,21 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
 
     /**
      * @return bool
+     * @throws ContainerException
      * @throws NotFoundException
      */
     protected function appendCsrfToken(): bool
     {
         if ($this->session->get('csrf_' . $this->formId)) {
+
             return false;
         }
 
-        $token = hash('sha256', uniqid());
+        $token = hash('sha512', uniqid());
 
         $this->add(Csrf::class, [
             'value' => $token,
+            'data-id' => $this->getId(),
             'name'  => 'csrf'
         ]);
 
@@ -207,6 +214,6 @@ abstract class AbstractBuilder implements FormBuilderInterface, LoggerAwareInter
      *
      * @return void
      */
-    abstract public function create(RequestInterface $request);
+    abstract public function create(RequestInterface $request): void;
 
 }
