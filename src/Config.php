@@ -137,7 +137,7 @@ class Config
     {
         $result  = [];
         $matches = [];
-        preg_match_all('/([A-Z0-9_]+)="?([\w\+\-\.\_\/%$§]+)"?/um', $payload, $matches);
+        preg_match_all('/([A-Z0-9_]+)="?([\w\+\-\.\\:_\/%$§]+)"?/um', $payload, $matches);
 
         if (empty($matches)) {
             return [];
