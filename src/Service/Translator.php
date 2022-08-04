@@ -24,6 +24,8 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface, Observer
 
     private ?array $translationData = null;
 
+    const DEFAULT_COUNTRY = 'de';
+
     /**
      * @param string|null $country
      */
@@ -75,17 +77,13 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface, Observer
 
     private function loadTranslationFile(string $lang)
     {
-        try {
-            $translationFilePath = sprintf(
-                '%s%s.json',
-                $this->getConfig()->get('app:translation:path'),
-                $this->country
-            );
+        $translationFilePath = sprintf(
+            '%s%s.json',
+            $this->getConfig()->get('app:translation:path'),
+            $this->country
+        );
 
-            return json_decode(file_get_contents($translationFilePath), true);
-        } catch(\Throwable $e) {
-            var_dump($e);
-        }
+        return json_decode(file_get_contents($translationFilePath), true);
     }
 
     /**
@@ -103,7 +101,7 @@ class Translator implements ConfigAwareInterface, LoggerAwareInterface, Observer
             $this->getLogger()->warning('Translator: Couldn\'t detect language.');;
         }
 
-        $this->country = $lang;
+        $this->country = $lang ?? self::DEFAULT_COUNTRY;
         $this->isLanguageDetected = $lang !== null;
 
         $this->getLogger()->debug('Translator: Language "' . $lang . '" detected.');

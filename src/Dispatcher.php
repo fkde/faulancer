@@ -55,7 +55,7 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
     public function forward(RequestInterface $request): ResponseInterface
     {
         $path   = $this->sanitizePath($request->getUri()->getPath());
-        $result = $this->getRouteItemByPath($path);
+        $result = $this->getRouteItemByPath($path, $request->getMethod());
 
         if (empty($result)) {
             throw new NotFoundException(sprintf('No matching route for path "%s" found.', $path));
@@ -89,9 +89,10 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
 
     /**
      * @param string $path
+     * @param string $method
      * @return array
      */
-    private function getRouteItemByPath(string $path): array
+    private function getRouteItemByPath(string $path, string $method = 'GET'): array
     {
         foreach ($this->config->get('routes') as $name => $route) {
 
@@ -101,6 +102,10 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
 
             $this->logger->debug('Matched route "' . $name . '" for path "' . $path . '".');
             $segments = $this->getPathSegments($path, $route['path']);
+
+            if (false === $this->hasMethodMatch($method, $route['methods'] ?? [])) {
+                continue;
+            }
 
             if (false === $this->hasConstraintMatch($segments, $route['constraints'] ?? [])) {
                 continue;
@@ -148,6 +153,17 @@ class Dispatcher implements EntityManagerAwareInterface, LoggerAwareInterface, S
         }
 
         return !in_array(false, $result, true);
+    }
+
+    /**
+     * @param string $method
+     * @param array  $methods
+     *
+     * @return bool
+     */
+    private function hasMethodMatch(string $method, array $methods): bool
+    {
+        return empty($methods) || \in_array($method, $methods);
     }
 
     /**
