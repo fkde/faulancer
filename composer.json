@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Faulancer\\": "src/"
+      "Faulancer\\": "src/",
+      "Faulancer\\Tests\\": "tests/"
     }
   },
   "autoload-dev": {
@@ -37,10 +38,11 @@
     "squizlabs/php_codesniffer": "3.6.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "9.5.10"
+    "phpunit/phpunit": "9.5.10",
+    "phpspec/prophecy-phpunit": "^2.0"
   },
   "minimum-stability": "stable",
   "scripts": {
-    "test": "vendor/bin/phpunit -c phpunit.xml"
+    "tests": "vendor/bin/phpunit -c phpunit.xml"
   }
 }

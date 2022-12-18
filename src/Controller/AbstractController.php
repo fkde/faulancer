@@ -8,7 +8,7 @@ use Faulancer\Config;
 use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Faulancer\View\Renderer;
-use Faulancer\Model\Role;
+use Faulancer\Entity\Role;
 use Faulancer\Initializer;
 use Faulancer\Service\Aware\HttpFactoryAwareInterface;
 use Faulancer\Service\Aware\HttpFactoryAwareTrait;
@@ -240,7 +240,7 @@ abstract class AbstractController implements HttpFactoryAwareInterface
     /**
      * @return void
      */
-    protected function addDefaultAssets()
+    protected function addDefaultAssets(): void
     {
         // Must be implemented by children
     }

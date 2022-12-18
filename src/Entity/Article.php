@@ -1,6 +1,6 @@
 <?php
 
-namespace Faulancer\Model;
+namespace Faulancer\Entity;
 
 use ORM\Entity;
 

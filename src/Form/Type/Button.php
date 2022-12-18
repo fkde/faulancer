@@ -25,17 +25,20 @@ class Button extends AbstractType
      */
     public function render(): string
     {
-        $result = '<button ';
+        $attributes = [];
 
         foreach ($this->definition as $attribute => $value) {
             if ($attribute === 'text') {
                 continue;
             }
-
-            $result .= sprintf(' %s="%s', $attribute, $this->getTranslator()->translate($value));
+            $attributes[] = sprintf('%s="%s"', $attribute, $this->getTranslator()->translate($value));
         }
 
-        $result .= '">' . $this->getTranslator()->translate($this->definition['text']) . '</button>';
+        $result = '<button ';
+        $result .= implode(' ', $attributes);
+        $result .= '>';
+        $result .= $this->getTranslator()->translate($this->definition['text']);
+        $result .= '</button>';
 
         return $result;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Faulancer\Model;
+namespace Faulancer\Entity;
 
 use ORM\Entity;
 
@@ -18,7 +18,6 @@ class User extends Entity
     protected static $tableName = 'user';
 
     protected static $relations = [
-        'articles' => [Comment::class, 'article'],
         'roles' => [Role::class, ['id' => 'user_id'], 'users', 'user_role']
     ];
 }

@@ -3,7 +3,6 @@
 namespace Faulancer\View;
 
 use Assert\Assertion;
-use Assert\AssertionFailedException;
 use Faulancer\Config;
 use Faulancer\Initializer;
 use Faulancer\Service\Session;
@@ -11,7 +10,6 @@ use Faulancer\Value\Asset;
 use Faulancer\View\Helper\User;
 use Faulancer\Service\Environment;
 use Faulancer\Exception\TemplateException;
-use Faulancer\Exception\FrameworkException;
 use Faulancer\Exception\ViewHelperException;
 use Faulancer\Service\Aware\ConfigAwareTrait;
 use Faulancer\Service\Aware\LoggerAwareTrait;

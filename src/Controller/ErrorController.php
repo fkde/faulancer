@@ -31,18 +31,16 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
      * @param Throwable $t
      *
      * @return string
-     *
-     * @throws FileNotFoundException
-     * @throws FrameworkException
-     * @throws NotFoundException
-     * @throws TemplateException
-     * @throws ViewHelperException
      */
     public function onException(Throwable $t): string
     {
-        if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
-            $this->getObserver()->notify(new ExceptionEvent($t));
-            return $this->render('/error/404.phtml')->getBody();
+        try {
+            if (getenv('APPLICATION_ENV') === Environment::PRODUCTION) {
+                $this->getObserver()->notify(new ExceptionEvent($t));
+                return (string)$this->render('/error/404.phtml')->getBody();
+            }
+        } catch (\Throwable $t) {
+            $t = new FrameworkException('Could not render error.', [], 500, $t);
         }
 
         return $this->renderStacktrace($t);
@@ -56,8 +54,6 @@ class ErrorController extends AbstractController implements ObserverAwareInterfa
      * @param array|null $context
      *
      * @return string
-     *
-     * @throws FrameworkException
      */
     public function onError(int $code, string $message, string $file, int $line, ?array $context = []): string
     {

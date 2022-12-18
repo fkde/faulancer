@@ -77,11 +77,6 @@ class Kernel
 
     /**
      * @return void
-     * @throws Exception\FileNotFoundException
-     * @throws Exception\ViewHelperException
-     * @throws NotFoundException
-     * @throws TemplateException
-     * @throws Throwable
      */
     public static function boot(): void
     {
