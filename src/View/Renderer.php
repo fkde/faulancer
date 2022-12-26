@@ -39,6 +39,8 @@ use Faulancer\Service\Aware\EnvironmentAwareInterface;
  * @method string translate(string $key, array $variables = [])
  * @method User user()
  *
+ * TODO: Add better exception handling as the application currently breaks in a way which isn't usable anymore
+ *
  */
 class Renderer implements LoggerAwareInterface, ConfigAwareInterface, EnvironmentAwareInterface
 {
@@ -82,7 +84,6 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
     /**
      * @param string $file
-     * @param string $type
      *
      * @return $this
      */
@@ -293,6 +294,10 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
     public function __call(string $name, array $arguments)
     {
         $viewHelper = sprintf('%s\Helper\%s', __NAMESPACE__, ucfirst($name));
+
+        if (false === class_exists($viewHelper)) {
+            $viewHelper = sprintf('App\View\Helper\%s', ucfirst($name));
+        }
 
         if (false === class_exists($viewHelper)) {
             throw new ViewHelperException(sprintf('No view helper for "%s" found.', $name));
