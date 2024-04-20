@@ -8,7 +8,7 @@ use Faulancer\Config;
 use Faulancer\Exception\ContainerException;
 use Faulancer\Exception\FrameworkException;
 use Faulancer\View\Renderer;
-use Faulancer\Model\Role;
+use Faulancer\Entity\Role;
 use Faulancer\Initializer;
 use Faulancer\Service\Aware\HttpFactoryAwareInterface;
 use Faulancer\Service\Aware\HttpFactoryAwareTrait;
@@ -106,21 +106,26 @@ abstract class AbstractController implements HttpFactoryAwareInterface
 
     /**
      * @param string $template
-     * @param array $variables
-     * @return ResponseInterface
+     * @param array  $variables
+     * @param bool   $exposeInParent
      *
+     * @return ResponseInterface
+     * @throws ContainerException
      * @throws FileNotFoundException
      * @throws NotFoundException
      * @throws TemplateException
      * @throws ViewHelperException
-     * @throws FrameworkException
      */
-    protected function render(string $template, array $variables = []): ResponseInterface
+    protected function render(string $template, array $variables = [], bool $exposeInParent = false): ResponseInterface
     {
         $this->logger->debug('Start rendering of template "' . $template . '".');
 
         $this->getView()->setTemplate($template);
         $this->getView()->setVariables($variables);
+
+        if ($exposeInParent && $this->getView()->getParentView() instanceof Renderer) {
+            $this->getView()->getParentView()->setVariables($variables);
+        }
 
         $this->addDefaultAssets();
 
@@ -147,15 +152,20 @@ abstract class AbstractController implements HttpFactoryAwareInterface
 
     /**
      * @param string $routeName
+     * @param array $queryParams
      *
      * @return ResponseInterface
      */
-    protected function redirect(string $routeName): ResponseInterface
+    protected function redirect(string $routeName, array $queryParams = []): ResponseInterface
     {
         $path = $this->getConfig()->get('routes')[$routeName]['path'] ?? null;
 
         if (null === $path) {
             $path = $routeName;
+        }
+
+        if (!empty($queryParams)) {
+            $path = sprintf('%s?%s', $path, http_build_query($queryParams));
         }
 
         $response = $this->getHttpFactory()->createResponse(301);
@@ -240,7 +250,7 @@ abstract class AbstractController implements HttpFactoryAwareInterface
     /**
      * @return void
      */
-    protected function addDefaultAssets()
+    protected function addDefaultAssets(): void
     {
         // Must be implemented by children
     }

@@ -3,7 +3,6 @@
 namespace Faulancer\View;
 
 use Assert\Assertion;
-use Assert\AssertionFailedException;
 use Faulancer\Config;
 use Faulancer\Initializer;
 use Faulancer\Service\Session;
@@ -11,7 +10,6 @@ use Faulancer\Value\Asset;
 use Faulancer\View\Helper\User;
 use Faulancer\Service\Environment;
 use Faulancer\Exception\TemplateException;
-use Faulancer\Exception\FrameworkException;
 use Faulancer\Exception\ViewHelperException;
 use Faulancer\Service\Aware\ConfigAwareTrait;
 use Faulancer\Service\Aware\LoggerAwareTrait;
@@ -40,6 +38,8 @@ use Faulancer\Service\Aware\EnvironmentAwareInterface;
  * @method string templateComponent(string $component, array $variables = [])
  * @method string translate(string $key, array $variables = [])
  * @method User user()
+ *
+ * TODO: Add better exception handling as the application currently breaks in a way which isn't usable anymore
  *
  */
 class Renderer implements LoggerAwareInterface, ConfigAwareInterface, EnvironmentAwareInterface
@@ -84,7 +84,6 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
 
     /**
      * @param string $file
-     * @param string $type
      *
      * @return $this
      */
@@ -295,6 +294,10 @@ class Renderer implements LoggerAwareInterface, ConfigAwareInterface, Environmen
     public function __call(string $name, array $arguments)
     {
         $viewHelper = sprintf('%s\Helper\%s', __NAMESPACE__, ucfirst($name));
+
+        if (false === class_exists($viewHelper)) {
+            $viewHelper = sprintf('App\View\Helper\%s', ucfirst($name));
+        }
 
         if (false === class_exists($viewHelper)) {
             throw new ViewHelperException(sprintf('No view helper for "%s" found.', $name));

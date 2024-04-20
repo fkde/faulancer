@@ -3,10 +3,8 @@
 namespace Faulancer;
 
 use Assert\Assert;
-use Assert\Assertion;
 use Assert\AssertionFailedException;
 use Faulancer\Exception\FileNotFoundException;
-use Faulancer\Exception\FrameworkException;
 
 class Config
 {

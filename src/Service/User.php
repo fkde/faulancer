@@ -3,7 +3,7 @@
 namespace Faulancer\Service;
 
 use ORM\Exception\NoEntity;
-use Faulancer\Model\User as UserModel;
+use Faulancer\Entity\User as UserModel;
 use ORM\Exception\IncompletePrimaryKey;
 use Faulancer\Service\Aware\LoggerAwareTrait;
 use Faulancer\Service\Aware\SessionAwareTrait;

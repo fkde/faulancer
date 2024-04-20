@@ -2,6 +2,7 @@
 
 namespace Faulancer;
 
+use League\OAuth2\Server\AuthorizationServer;
 use \Throwable;
 use Apix\Log\Logger;
 use Assert\Assertion;
@@ -77,11 +78,6 @@ class Kernel
 
     /**
      * @return void
-     * @throws Exception\FileNotFoundException
-     * @throws Exception\ViewHelperException
-     * @throws NotFoundException
-     * @throws TemplateException
-     * @throws Throwable
      */
     public static function boot(): void
     {
@@ -90,6 +86,9 @@ class Kernel
 
         try {
             [$config, $entityManager, $logger, $container, $observer] = static::bootDefaults();
+
+            $authorizationServer = Initializer::load(AuthorizationServer::class);
+            $authenticator = new Authenticator();
 
             $httpFactory = new HttpFactory();
             $creator = new ServerRequestCreator(
@@ -101,7 +100,23 @@ class Kernel
             $request = $creator->fromGlobals();
             $container->set(Request::class, $request, [RequestInterface::class]);
             $container->set(HttpFactory::class, $httpFactory);
-            $observer->notify(new RequestEvent($request));
+            $response = $observer->notify(new RequestEvent($request));
+
+            if ($response instanceof ResponseInterface) {
+
+                $headers = $response->getHeaders();
+                $statusCode = $response->getStatusCode();
+
+                header('HTTP/2 ' . $statusCode . ' ' . $response->getReasonPhrase());
+
+                foreach ($headers as $name => $value) {
+                    header($name . ': ' . implode(';', $value));
+                }
+
+                echo $response->getBody();
+                return;
+
+            }
 
             $translator = Initializer::load(Translator::class);
             $container->set(Translator::class, $translator);

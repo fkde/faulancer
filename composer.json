@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Faulancer\\": "src/"
+      "Faulancer\\": "src/",
+      "Faulancer\\Tests\\": "tests/"
     }
   },
   "autoload-dev": {
@@ -34,13 +35,16 @@
     "psr/http-client": "1.0.1",
     "beberlei/assert": "v3.3.1",
     "nyholm/psr7-server": "1.0.2",
-    "squizlabs/php_codesniffer": "3.6.1"
+    "squizlabs/php_codesniffer": "3.6.1",
+    "league/oauth2-server": "^8.3",
+    "league/oauth2-client": "^2.6"
   },
   "require-dev": {
-    "phpunit/phpunit": "9.5.10"
+    "phpunit/phpunit": "9.5.10",
+    "phpspec/prophecy-phpunit": "^2.0"
   },
   "minimum-stability": "stable",
   "scripts": {
-    "test": "vendor/bin/phpunit -c phpunit.xml"
+    "tests": "vendor/bin/phpunit -c phpunit.xml"
   }
 }

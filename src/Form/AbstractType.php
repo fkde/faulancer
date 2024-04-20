@@ -30,7 +30,7 @@ abstract class AbstractType implements FormTypeInterface, TranslatorAwareInterfa
 
     protected array $errorMessages;
 
-    private string $uniqid;
+    private string $uniqId;
 
     /**
      * AbstractType constructor.
@@ -47,7 +47,7 @@ abstract class AbstractType implements FormTypeInterface, TranslatorAwareInterfa
         $this->validators = $validators;
         $this->label      = $definition['label'] ?? null;
         $this->value      = $definition['value'] ?? null;
-        $this->uniqid     = uniqid();
+        $this->uniqId     = uniqid();
     }
 
     /**
@@ -92,7 +92,7 @@ abstract class AbstractType implements FormTypeInterface, TranslatorAwareInterfa
 
     public function getLabel(): ?string
     {
-        return '<label for="' . $this->uniqid . '">' . $this->getTranslator()->translate($this->label) . '</label>';
+        return '<label for="' . $this->uniqId . '">' . $this->getTranslator()->translate($this->label) . '</label>';
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class AbstractType implements FormTypeInterface, TranslatorAwareInterfa
      */
     protected function getUniqueId(): string
     {
-        return $this->uniqid;
+        return $this->uniqId;
     }
 
     /**
@@ -117,6 +117,8 @@ abstract class AbstractType implements FormTypeInterface, TranslatorAwareInterfa
 
             /** @var FormValidatorInterface $validatorObj */
             $validatorObj = new $validator($this, $this->session);
+
+            // TODO: Check for correct validator interface
 
             if (false === $validatorObj->exec($this->getValue())) {
                 $this->definition['class'] = $this->definition['class'] ?? null . ' error';

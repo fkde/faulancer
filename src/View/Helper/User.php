@@ -2,7 +2,7 @@
 
 namespace Faulancer\View\Helper;
 
-use Faulancer\Model\Role;
+use Faulancer\Entity\Role;
 
 /**
  * Class User
